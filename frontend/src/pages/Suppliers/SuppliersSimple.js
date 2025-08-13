@@ -55,7 +55,7 @@ const Suppliers = () => {
     setLoading(true);
     try {
       const response = await supplierService.getAll(1, 50, searchTerm);
-      setSuppliers(response.docs || response.suppliers || []);
+      setSuppliers(response.data || []);
     } catch (error) {
       showNotification('Error al cargar proveedores', 'error');
     } finally {
@@ -127,7 +127,7 @@ const Suppliers = () => {
                   <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                     <BusinessIcon sx={{ mr: 1, color: 'primary.main' }} />
                     <Typography variant="h6" component="h2">
-                      {supplier.name}
+                      {supplier.company}
                     </Typography>
                   </Box>
                   
@@ -140,13 +140,13 @@ const Suppliers = () => {
                   </Typography>
                   
                   <Typography variant="body2" color="textSecondary">
-                    📍 {supplier.city}, {supplier.country}
+                    📍 {supplier.address?.city}, {supplier.address?.country}
                   </Typography>
                   
-                  {supplier.contactPerson && (
+                  {supplier.contactName && (
                     <Box sx={{ mt: 1 }}>
                       <Chip 
-                        label={`Contacto: ${supplier.contactPerson}`} 
+                        label={`Contacto: ${supplier.contactName}`} 
                         size="small" 
                         variant="outlined" 
                       />
@@ -295,15 +295,6 @@ const Suppliers = () => {
                 value={formData.address.country}
                 onChange={(e) => setFormData({...formData, address: {...formData.address, country: e.target.value}})}
                 required
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="Código postal"
-                name="zipCode"
-                value={formData.address.zipCode}
-                onChange={(e) => setFormData({...formData, address: {...formData.address, zipCode: e.target.value}})}
               />
             </Grid>
           </Grid>
