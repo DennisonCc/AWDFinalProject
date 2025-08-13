@@ -50,7 +50,7 @@ const Clients = () => {
     setLoading(true);
     try {
       const response = await clientService.getAll(1, 50, searchTerm);
-      setClients(response.docs || response.clients || []);
+      setClients(response.data || []);
     } catch (error) {
       showNotification('Error al cargar clientes', 'error');
     } finally {

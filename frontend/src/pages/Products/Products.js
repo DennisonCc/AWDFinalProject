@@ -77,7 +77,7 @@ const Products = () => {
     setLoading(true);
     try {
       const response = await productService.getAll(1, 50, searchTerm);
-      setProducts(response.docs || response.products || []);
+      setProducts(response.data || []);
     } catch (error) {
       showNotification('Error al cargar productos', 'error');
     } finally {

@@ -72,7 +72,7 @@ const Invoices = () => {
     setLoading(true);
     try {
       const response = await invoiceService.getAll(1, 50, searchTerm);
-      setInvoices(response.docs || response.invoices || []);
+      setInvoices(response.data || []);
     } catch (error) {
       showNotification('Error al cargar facturas', 'error');
     } finally {
@@ -83,7 +83,7 @@ const Invoices = () => {
   const loadClients = async () => {
     try {
       const response = await clientService.getAll(1, 100);
-      setClients(response.docs || response.clients || []);
+      setClients(response.data || []);
     } catch (error) {
       console.error('Error loading clients:', error);
     }
@@ -92,7 +92,7 @@ const Invoices = () => {
   const loadProducts = async () => {
     try {
       const response = await productService.getAll(1, 100);
-      setProducts(response.docs || response.products || []);
+      setProducts(response.data || []);
     } catch (error) {
       console.error('Error loading products:', error);
     }
