@@ -7,6 +7,8 @@ import ProtectedRoute from './components/Common/ProtectedRoute';
 import Layout from './components/Layout/Layout';
 import Login from './pages/Auth/Login';
 import Dashboard from './pages/Dashboard/Dashboard';
+import Suppliers from './pages/Suppliers/SuppliersSimple';
+import Clients from './pages/Clients/Clients';
 
 const theme = createTheme({
   palette: {
@@ -42,7 +44,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Layout>
-                    <div>Módulo de Proveedores (Próximamente)</div>
+                    <Suppliers />
                   </Layout>
                 </ProtectedRoute>
               }
@@ -52,7 +54,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Layout>
-                    <div>Módulo de Clientes (Próximamente)</div>
+                    <Clients />
                   </Layout>
                 </ProtectedRoute>
               }
