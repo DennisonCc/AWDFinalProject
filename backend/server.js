@@ -6,11 +6,11 @@ const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 // Importar rutas
+const authRoutes = require('./routes/auth');
 const supplierRoutes = require('./routes/suppliers');
 const clientRoutes = require('./routes/clients');
 const productRoutes = require('./routes/products');
 const invoiceRoutes = require('./routes/invoices');
-const userRoutes = require('./routes/users');
 
 // Importar middleware
 const errorHandler = require('./middleware/errorHandler');
@@ -56,21 +56,21 @@ app.get('/', (req, res) => {
     message: 'API del Sistema Bazar - Funcionando correctamente',
     version: '1.0.0',
     endpoints: {
+      auth: '/api/auth',
       suppliers: '/api/suppliers',
       clients: '/api/clients',
       products: '/api/products',
-      invoices: '/api/invoices',
-      users: '/api/users'
+      invoices: '/api/invoices'
     }
   });
 });
 
 // Rutas de la API
+app.use('/api/auth', authRoutes);
 app.use('/api/suppliers', supplierRoutes);
 app.use('/api/clients', clientRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/invoices', invoiceRoutes);
-app.use('/api/users', userRoutes);
 
 // Middleware de manejo de errores (debe ir al final)
 app.use(errorHandler);
