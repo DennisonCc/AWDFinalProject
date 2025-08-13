@@ -16,46 +16,47 @@ import {
   CardContent,
   CardActions,
   IconButton,
-  Chip
+  Chip,
+  InputAdornment
 } from '@mui/material';
 import {
   Add as AddIcon,
   Edit as EditIcon,
   Delete as DeleteIcon,
   Search as SearchIcon,
-  Person as PersonIcon,
-  Email as EmailIcon,
-  Phone as PhoneIcon,
-  LocationOn as LocationIcon,
-  Assignment as DocumentIcon
+  Inventory as InventoryIcon,
+  AttachMoney as PriceIcon,
+  Category as CategoryIcon,
+  Storage as StockIcon,
+  Description as DescriptionIcon
 } from '@mui/icons-material';
-import clientService from '../../services/clientService';
+import productService from '../../services/productService';
 
-const Clients = () => {
-  const [clients, setClients] = useState([]);
+const Products = () => {
+  const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
-  const [editingClient, setEditingClient] = useState(null);
+  const [editingProduct, setEditingProduct] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [notification, setNotification] = useState({ open: false, message: '', severity: 'success' });
   
   const [formData, setFormData] = useState({
     name: '',
-    email: '',
-    phone: '',
-    address: '',
-    document: ''
+    description: '',
+    price: '',
+    category: '',
+    stock: ''
   });
 
   const loadData = async () => {
     setLoading(true);
     try {
-      const response = await clientService.getAll(1, 50, searchTerm);
-      const clientsData = response?.data?.docs || response?.data || response?.docs || [];
-      setClients(Array.isArray(clientsData) ? clientsData : []);
+      const response = await productService.getAll(1, 50, searchTerm);
+      const productsData = response?.data?.docs || response?.data || response?.docs || [];
+      setProducts(Array.isArray(productsData) ? productsData : []);
     } catch (error) {
-      console.error('Error al cargar clientes:', error);
-      showNotification('Error al cargar clientes', 'error');
+      console.error('Error al cargar productos:', error);
+      showNotification('Error al cargar productos', 'error');
     } finally {
       setLoading(false);
     }
@@ -71,55 +72,73 @@ const Clients = () => {
 
   const handleSubmit = async () => {
     try {
-      if (editingClient) {
-        await clientService.update(editingClient._id, formData);
-        showNotification('Cliente actualizado exitosamente');
+      const productData = {
+        ...formData,
+        price: parseFloat(formData.price) || 0,
+        stock: parseInt(formData.stock) || 0
+      };
+
+      if (editingProduct) {
+        await productService.update(editingProduct._id, productData);
+        showNotification('Producto actualizado exitosamente');
       } else {
-        await clientService.create(formData);
-        showNotification('Cliente creado exitosamente');
+        await productService.create(productData);
+        showNotification('Producto creado exitosamente');
       }
       
       setOpenDialog(false);
-      setEditingClient(null);
+      setEditingProduct(null);
       resetForm();
       loadData();
     } catch (error) {
-      showNotification(error.message || 'Error al guardar cliente', 'error');
+      showNotification(error.message || 'Error al guardar producto', 'error');
     }
   };
 
   const resetForm = () => {
     setFormData({
       name: '',
-      email: '',
-      phone: '',
-      address: '',
-      document: ''
+      description: '',
+      price: '',
+      category: '',
+      stock: ''
     });
   };
 
-  const handleEdit = (client) => {
-    setEditingClient(client);
+  const handleEdit = (product) => {
+    setEditingProduct(product);
     setFormData({
-      name: client.name || '',
-      email: client.email || '',
-      phone: client.phone || '',
-      address: client.address || '',
-      document: client.document || ''
+      name: product.name || '',
+      description: product.description || '',
+      price: product.price?.toString() || '',
+      category: product.category || '',
+      stock: product.stock?.toString() || ''
     });
     setOpenDialog(true);
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm('¿Está seguro de que desea eliminar este cliente?')) {
+    if (window.confirm('¿Está seguro de que desea eliminar este producto?')) {
       try {
-        await clientService.delete(id);
-        showNotification('Cliente eliminado exitosamente');
+        await productService.delete(id);
+        showNotification('Producto eliminado exitosamente');
         loadData();
       } catch (error) {
-        showNotification(error.message || 'Error al eliminar cliente', 'error');
+        showNotification(error.message || 'Error al eliminar producto', 'error');
       }
     }
+  };
+
+  const getStockColor = (stock) => {
+    if (stock === 0) return '#dc2626';
+    if (stock < 10) return '#ea580c';
+    return '#059669';
+  };
+
+  const getStockLabel = (stock) => {
+    if (stock === 0) return 'Sin Stock';
+    if (stock < 10) return 'Stock Bajo';
+    return 'Disponible';
   };
 
   return (
@@ -134,13 +153,13 @@ const Clients = () => {
       }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <PersonIcon sx={{ fontSize: 40 }} />
+            <InventoryIcon sx={{ fontSize: 40 }} />
             <Box>
               <Typography variant="h4" fontWeight="bold">
-                Gestión de Clientes
+                Gestión de Productos
               </Typography>
               <Typography variant="subtitle1" sx={{ opacity: 0.9 }}>
-                Administra la información de tus clientes
+                Administra tu inventario y catálogo de productos
               </Typography>
             </Box>
           </Box>
@@ -160,7 +179,7 @@ const Clients = () => {
               }
             }}
           >
-            Nuevo Cliente
+            Nuevo Producto
           </Button>
         </Box>
       </Paper>
@@ -170,7 +189,7 @@ const Clients = () => {
         <TextField
           fullWidth
           variant="outlined"
-          placeholder="🔍 Buscar clientes por nombre, email, teléfono..."
+          placeholder="🔍 Buscar productos por nombre, categoría, descripción..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           InputProps={{
@@ -212,14 +231,14 @@ const Clients = () => {
               }}
             />
             <Typography variant="h6" color="#be185d">
-              Cargando clientes...
+              Cargando productos...
             </Typography>
           </Box>
         </Paper>
       ) : (
         <Grid container spacing={3}>
-          {clients.map((client) => (
-            <Grid item xs={12} sm={6} md={4} key={client._id}>
+          {products.map((product) => (
+            <Grid item xs={12} sm={6} md={4} key={product._id}>
               <Card 
                 elevation={3}
                 sx={{
@@ -247,44 +266,57 @@ const Clients = () => {
                         mr: 2
                       }}
                     >
-                      <PersonIcon />
+                      <InventoryIcon />
                     </Box>
-                    <Typography variant="h6" component="h2" fontWeight="bold">
-                      {client.name}
-                    </Typography>
-                  </Box>
-                  
-                  <Paper elevation={1} sx={{ p: 2, mb: 2, bgcolor: '#fdf2f8', borderRadius: 2 }}>
-                    <Typography variant="body1" sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                      <EmailIcon sx={{ color: '#ec4899', fontSize: 18 }} />
-                      {client.email}
-                    </Typography>
-                    
-                    <Typography variant="body2" sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                      <PhoneIcon sx={{ color: '#ec4899', fontSize: 18 }} />
-                      {client.phone}
-                    </Typography>
-                    
-                    <Typography variant="body2" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <LocationIcon sx={{ color: '#ec4899', fontSize: 18 }} />
-                      {client.address}
-                    </Typography>
-                  </Paper>
-                  
-                  {client.document && (
-                    <Box sx={{ mt: 2 }}>
+                    <Box sx={{ flex: 1 }}>
+                      <Typography variant="h6" component="h2" fontWeight="bold">
+                        {product.name}
+                      </Typography>
                       <Chip 
-                        icon={<DocumentIcon sx={{ color: '#be185d' }} />}
-                        label={`Doc: ${client.document}`} 
+                        label={product.category || 'Sin categoría'}
                         sx={{ 
                           bgcolor: '#fce7f3', 
                           color: '#be185d',
-                          border: '1px solid #f9a8d4'
+                          border: '1px solid #f9a8d4',
+                          mt: 0.5
                         }}
                         size="small"
                       />
                     </Box>
-                  )}
+                  </Box>
+                  
+                  <Paper elevation={1} sx={{ p: 2, mb: 2, bgcolor: '#fdf2f8', borderRadius: 2 }}>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1, fontStyle: 'italic' }}>
+                      {product.description || 'Sin descripción'}
+                    </Typography>
+                    
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 2 }}>
+                      <Box>
+                        <Typography variant="h5" fontWeight="bold" color="#059669">
+                          ${parseFloat(product.price || 0).toFixed(2)}
+                        </Typography>
+                      </Box>
+                      <Box sx={{ textAlign: 'right' }}>
+                        <Typography 
+                          variant="body2" 
+                          fontWeight="bold"
+                          sx={{ color: getStockColor(product.stock || 0) }}
+                        >
+                          {product.stock || 0} unidades
+                        </Typography>
+                        <Chip 
+                          label={getStockLabel(product.stock || 0)}
+                          sx={{ 
+                            bgcolor: product.stock === 0 ? '#fee2e2' : product.stock < 10 ? '#fed7aa' : '#f0fdf4',
+                            color: getStockColor(product.stock || 0),
+                            fontSize: '0.75rem',
+                            height: '20px'
+                          }}
+                          size="small"
+                        />
+                      </Box>
+                    </Box>
+                  </Paper>
                 </CardContent>
                 
                 <CardActions sx={{ p: 2, pt: 0, justifyContent: 'space-between' }}>
@@ -297,8 +329,8 @@ const Clients = () => {
                         color: '#be185d'
                       }
                     }}
-                    onClick={() => handleEdit(client)}
-                    title="Editar Cliente"
+                    onClick={() => handleEdit(product)}
+                    title="Editar Producto"
                   >
                     <EditIcon />
                   </IconButton>
@@ -311,8 +343,8 @@ const Clients = () => {
                         color: '#991b1b'
                       }
                     }}
-                    onClick={() => handleDelete(client._id)}
-                    title="Eliminar Cliente"
+                    onClick={() => handleDelete(product._id)}
+                    title="Eliminar Producto"
                   >
                     <DeleteIcon />
                   </IconButton>
@@ -323,7 +355,7 @@ const Clients = () => {
         </Grid>
       )}
 
-      {clients.length === 0 && !loading && (
+      {products.length === 0 && !loading && (
         <Paper elevation={3} sx={{ p: 6, textAlign: 'center', bgcolor: 'white', borderRadius: 3, border: '1px solid #fce7f3' }}>
           <Box
             sx={{
@@ -335,13 +367,13 @@ const Clients = () => {
               mb: 3
             }}
           >
-            <PersonIcon sx={{ fontSize: 60 }} />
+            <InventoryIcon sx={{ fontSize: 60 }} />
           </Box>
           <Typography variant="h5" fontWeight="bold" color="#be185d" gutterBottom>
-            No hay clientes registrados
+            No hay productos registrados
           </Typography>
           <Typography variant="body1" color="text.secondary" sx={{ mb: 4, maxWidth: 400, mx: 'auto' }}>
-            Comienza a registrar la información de tus clientes para gestionar mejor tu negocio.
+            Comienza a agregar productos a tu inventario para gestionar tu catálogo y ventas.
           </Typography>
           <Button
             variant="contained"
@@ -358,12 +390,12 @@ const Clients = () => {
               }
             }}
           >
-            Agregar Primer Cliente
+            Agregar Primer Producto
           </Button>
         </Paper>
       )}
 
-      {/* Dialog para crear/editar cliente con tema rosado */}
+      {/* Dialog para crear/editar producto con tema rosado */}
       <Dialog 
         open={openDialog} 
         onClose={() => setOpenDialog(false)} 
@@ -385,21 +417,21 @@ const Clients = () => {
           borderBottom: '1px solid #fce7f3',
           fontWeight: 'bold'
         }}>
-          <PersonIcon />
-          {editingClient ? 'Editar Cliente' : 'Nuevo Cliente'}
+          <InventoryIcon />
+          {editingProduct ? 'Editar Producto' : 'Nuevo Producto'}
         </DialogTitle>
         <DialogContent sx={{ p: 3 }}>
           <Grid container spacing={3} sx={{ mt: 1 }}>
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                label="Nombre Completo"
+                label="Nombre del Producto"
                 value={formData.name}
                 onChange={(e) => setFormData({...formData, name: e.target.value})}
                 required
                 variant="outlined"
                 InputProps={{
-                  startAdornment: <PersonIcon sx={{ color: '#ec4899', mr: 1 }} />,
+                  startAdornment: <InventoryIcon sx={{ color: '#ec4899', mr: 1 }} />,
                 }}
                 sx={{
                   '& .MuiOutlinedInput-root': {
@@ -417,14 +449,13 @@ const Clients = () => {
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                label="Correo Electrónico"
-                type="email"
-                value={formData.email}
-                onChange={(e) => setFormData({...formData, email: e.target.value})}
+                label="Categoría"
+                value={formData.category}
+                onChange={(e) => setFormData({...formData, category: e.target.value})}
                 required
                 variant="outlined"
                 InputProps={{
-                  startAdornment: <EmailIcon sx={{ color: '#ec4899', mr: 1 }} />,
+                  startAdornment: <CategoryIcon sx={{ color: '#ec4899', mr: 1 }} />,
                 }}
                 sx={{
                   '& .MuiOutlinedInput-root': {
@@ -442,13 +473,19 @@ const Clients = () => {
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                label="Teléfono"
-                value={formData.phone}
-                onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                label="Precio"
+                type="number"
+                value={formData.price}
+                onChange={(e) => setFormData({...formData, price: e.target.value})}
                 required
                 variant="outlined"
                 InputProps={{
-                  startAdornment: <PhoneIcon sx={{ color: '#ec4899', mr: 1 }} />,
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <PriceIcon sx={{ color: '#ec4899' }} />
+                      <Typography sx={{ color: '#ec4899', ml: 0.5 }}>$</Typography>
+                    </InputAdornment>
+                  ),
                 }}
                 sx={{
                   '& .MuiOutlinedInput-root': {
@@ -466,12 +503,14 @@ const Clients = () => {
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                label="Documento"
-                value={formData.document}
-                onChange={(e) => setFormData({...formData, document: e.target.value})}
+                label="Stock"
+                type="number"
+                value={formData.stock}
+                onChange={(e) => setFormData({...formData, stock: e.target.value})}
+                required
                 variant="outlined"
                 InputProps={{
-                  startAdornment: <DocumentIcon sx={{ color: '#ec4899', mr: 1 }} />,
+                  startAdornment: <StockIcon sx={{ color: '#ec4899', mr: 1 }} />,
                 }}
                 sx={{
                   '& .MuiOutlinedInput-root': {
@@ -489,15 +528,14 @@ const Clients = () => {
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                label="Dirección"
-                value={formData.address}
-                onChange={(e) => setFormData({...formData, address: e.target.value})}
-                required
+                label="Descripción"
+                value={formData.description}
+                onChange={(e) => setFormData({...formData, description: e.target.value})}
                 variant="outlined"
                 multiline
-                rows={2}
+                rows={3}
                 InputProps={{
-                  startAdornment: <LocationIcon sx={{ color: '#ec4899', mr: 1, mt: 1 }} />,
+                  startAdornment: <DescriptionIcon sx={{ color: '#ec4899', mr: 1, mt: 1 }} />,
                 }}
                 sx={{
                   '& .MuiOutlinedInput-root': {
@@ -534,7 +572,7 @@ const Clients = () => {
               }
             }}
           >
-            {editingClient ? 'Actualizar' : 'Crear'} Cliente
+            {editingProduct ? 'Actualizar' : 'Crear'} Producto
           </Button>
         </DialogActions>
       </Dialog>
@@ -557,4 +595,4 @@ const Clients = () => {
   );
 };
 
-export default Clients;
+export default Products;
