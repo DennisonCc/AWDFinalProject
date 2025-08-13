@@ -241,7 +241,7 @@ const createInvoice = async (req, res) => {
               type: 'sale',
               quantity: item.quantity,
               reason: `Venta - Factura ${invoice.invoiceNumber}`,
-              userId: req.user.userId,
+              userId: 'sistema',
               reference: invoice.invoiceId
             }
           }
@@ -249,7 +249,7 @@ const createInvoice = async (req, res) => {
       );
     }
 
-    logger.info(`Factura creada: ${invoice.invoiceNumber} (${invoice.invoiceId}) para cliente ${clientId} por usuario ${req.user.userId}`);
+    logger.info(`Factura creada: ${invoice.invoiceNumber} (${invoice.invoiceId}) para cliente ${clientId} por usuario ${'sistema'}`);
 
     res.status(201).json({
       success: true,
@@ -334,7 +334,7 @@ const updateInvoiceStatus = async (req, res) => {
                 type: 'return',
                 quantity: item.quantity,
                 reason: `Devolución - Factura cancelada ${invoice.invoiceNumber}`,
-                userId: req.user.userId,
+                userId: 'sistema',
                 reference: invoice.invoiceId
               }
             }
@@ -348,12 +348,12 @@ const updateInvoiceStatus = async (req, res) => {
       status: status,
       date: new Date(),
       reason: reason || `Estado cambiado a ${status}`,
-      userId: req.user.userId
+      userId: 'sistema'
     });
 
     await invoice.save();
 
-    logger.info(`Estado de factura actualizado: ${invoice.invoiceNumber} de ${oldStatus} a ${status} por usuario ${req.user.userId}`);
+    logger.info(`Estado de factura actualizado: ${invoice.invoiceNumber} de ${oldStatus} a ${status} por usuario ${'sistema'}`);
 
     res.json({
       success: true,
@@ -430,13 +430,13 @@ const updatePaymentStatus = async (req, res) => {
         date: new Date(paymentDate || Date.now()),
         method: paymentMethod,
         transactionId: transactionId,
-        userId: req.user.userId
+        userId: 'sistema'
       });
     }
 
     await invoice.save();
 
-    logger.info(`Pago actualizado: ${invoice.invoiceNumber} de ${oldPaymentStatus} a ${paymentStatus} por usuario ${req.user.userId}`);
+    logger.info(`Pago actualizado: ${invoice.invoiceNumber} de ${oldPaymentStatus} a ${paymentStatus} por usuario ${'sistema'}`);
 
     res.json({
       success: true,
@@ -495,7 +495,7 @@ const deleteInvoice = async (req, res) => {
               type: 'return',
               quantity: item.quantity,
               reason: `Devolución - Factura eliminada ${invoice.invoiceNumber}`,
-              userId: req.user.userId,
+              userId: 'sistema',
               reference: invoice.invoiceId
             }
           }
@@ -505,7 +505,7 @@ const deleteInvoice = async (req, res) => {
 
     await Invoice.deleteOne({ invoiceId: id });
 
-    logger.info(`Factura eliminada: ${invoice.invoiceNumber} (${invoice.invoiceId}) por usuario ${req.user.userId}`);
+    logger.info(`Factura eliminada: ${invoice.invoiceNumber} (${invoice.invoiceId}) por usuario ${'sistema'}`);
 
     res.json({
       success: true,

@@ -137,7 +137,7 @@ const createClient = async (req, res) => {
 
     await client.save();
 
-    logger.info(`Cliente creado: ${personalInfo?.firstName} ${personalInfo?.lastName || businessInfo?.companyName} (${client.clientId}) por usuario ${req.user.userId}`);
+    logger.info(`Cliente creado: ${personalInfo?.firstName} ${personalInfo?.lastName || businessInfo?.companyName} (${client.clientId}) por usuario ${'sistema'}`);
 
     res.status(201).json({
       success: true,
@@ -209,7 +209,7 @@ const updateClient = async (req, res) => {
 
     await client.save();
 
-    logger.info(`Cliente actualizado: ${client.personalInfo?.firstName} ${client.personalInfo?.lastName || client.businessInfo?.companyName} (${client.clientId}) por usuario ${req.user.userId}`);
+    logger.info(`Cliente actualizado: ${client.personalInfo?.firstName} ${client.personalInfo?.lastName || client.businessInfo?.companyName} (${client.clientId}) por usuario ${'sistema'}`);
 
     res.json({
       success: true,
@@ -256,7 +256,7 @@ const deleteClient = async (req, res) => {
     client.status = 'inactive';
     await client.save();
 
-    logger.info(`Cliente eliminado: ${client.personalInfo?.firstName} ${client.personalInfo?.lastName || client.businessInfo?.companyName} (${client.clientId}) por usuario ${req.user.userId}`);
+    logger.info(`Cliente eliminado: ${client.personalInfo?.firstName} ${client.personalInfo?.lastName || client.businessInfo?.companyName} (${client.clientId}) por usuario ${'sistema'}`);
 
     res.json({
       success: true,

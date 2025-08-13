@@ -36,13 +36,19 @@ const Suppliers = () => {
   const [notification, setNotification] = useState({ open: false, message: '', severity: 'success' });
   
   const [formData, setFormData] = useState({
-    name: '',
+    company: '',
+    identificationNumber: '',
+    contactName: '',
     email: '',
     phone: '',
-    address: '',
-    city: '',
-    country: '',
-    contactPerson: ''
+    bankAccount: '',
+    bankName: '',
+    address: {
+      street: '',
+      city: '',
+      state: '',
+      country: 'Colombia'
+    }
   });
 
   const loadSuppliers = async () => {
@@ -185,9 +191,29 @@ const Suppliers = () => {
               <TextField
                 fullWidth
                 label="Nombre de la empresa"
-                name="name"
-                value={formData.name}
-                onChange={(e) => setFormData({...formData, name: e.target.value})}
+                name="company"
+                value={formData.company}
+                onChange={(e) => setFormData({...formData, company: e.target.value})}
+                required
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="Número de identificación"
+                name="identificationNumber"
+                value={formData.identificationNumber}
+                onChange={(e) => setFormData({...formData, identificationNumber: e.target.value})}
+                required
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="Persona de contacto"
+                name="contactName"
+                value={formData.contactName}
+                onChange={(e) => setFormData({...formData, contactName: e.target.value})}
                 required
               />
             </Grid>
@@ -199,7 +225,6 @@ const Suppliers = () => {
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData({...formData, email: e.target.value})}
-                required
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -212,15 +237,34 @@ const Suppliers = () => {
                 required
               />
             </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="Cuenta bancaria"
+                name="bankAccount"
+                value={formData.bankAccount}
+                onChange={(e) => setFormData({...formData, bankAccount: e.target.value})}
+                required
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="Nombre del banco"
+                name="bankName"
+                value={formData.bankName}
+                onChange={(e) => setFormData({...formData, bankName: e.target.value})}
+                required
+              />
+            </Grid>
             <Grid item xs={12}>
               <TextField
                 fullWidth
                 label="Dirección"
-                name="address"
-                value={formData.address}
-                onChange={(e) => setFormData({...formData, address: e.target.value})}
-                multiline
-                rows={2}
+                name="street"
+                value={formData.address.street}
+                onChange={(e) => setFormData({...formData, address: {...formData.address, street: e.target.value}})}
+                required
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -228,8 +272,19 @@ const Suppliers = () => {
                 fullWidth
                 label="Ciudad"
                 name="city"
-                value={formData.city}
-                onChange={(e) => setFormData({...formData, city: e.target.value})}
+                value={formData.address.city}
+                onChange={(e) => setFormData({...formData, address: {...formData.address, city: e.target.value}})}
+                required
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="Estado/Provincia"
+                name="state"
+                value={formData.address.state}
+                onChange={(e) => setFormData({...formData, address: {...formData.address, state: e.target.value}})}
+                required
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -237,17 +292,18 @@ const Suppliers = () => {
                 fullWidth
                 label="País"
                 name="country"
-                value={formData.country}
-                onChange={(e) => setFormData({...formData, country: e.target.value})}
+                value={formData.address.country}
+                onChange={(e) => setFormData({...formData, address: {...formData.address, country: e.target.value}})}
+                required
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                label="Persona de contacto"
-                name="contactPerson"
-                value={formData.contactPerson}
-                onChange={(e) => setFormData({...formData, contactPerson: e.target.value})}
+                label="Código postal"
+                name="zipCode"
+                value={formData.address.zipCode}
+                onChange={(e) => setFormData({...formData, address: {...formData.address, zipCode: e.target.value}})}
               />
             </Grid>
           </Grid>

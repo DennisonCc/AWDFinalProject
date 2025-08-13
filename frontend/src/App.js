@@ -3,9 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { CssBaseline } from '@mui/material';
 import { AuthProvider } from './context/AuthContext';
-import ProtectedRoute from './components/Common/ProtectedRoute';
 import Layout from './components/Layout/Layout';
-import Login from './pages/Auth/Login';
 import Dashboard from './pages/Dashboard/Dashboard';
 import Suppliers from './pages/Suppliers/SuppliersSimple';
 import Clients from './pages/Clients/Clients';
@@ -30,55 +28,44 @@ function App() {
       <AuthProvider>
         <Router>
           <Routes>
-            <Route path="/login" element={<Login />} />
             <Route
               path="/dashboard"
               element={
-                <ProtectedRoute>
-                  <Layout>
-                    <Dashboard />
-                  </Layout>
-                </ProtectedRoute>
+                <Layout>
+                  <Dashboard />
+                </Layout>
               }
             />
             <Route
               path="/suppliers"
               element={
-                <ProtectedRoute>
-                  <Layout>
-                    <Suppliers />
-                  </Layout>
-                </ProtectedRoute>
+                <Layout>
+                  <Suppliers />
+                </Layout>
               }
             />
             <Route
               path="/clients"
               element={
-                <ProtectedRoute>
-                  <Layout>
-                    <Clients />
-                  </Layout>
-                </ProtectedRoute>
+                <Layout>
+                  <Clients />
+                </Layout>
               }
             />
             <Route
               path="/products"
               element={
-                <ProtectedRoute>
-                  <Layout>
-                    <Products />
-                  </Layout>
-                </ProtectedRoute>
+                <Layout>
+                  <Products />
+                </Layout>
               }
             />
             <Route
               path="/invoices"
               element={
-                <ProtectedRoute>
-                  <Layout>
-                    <Invoices />
-                  </Layout>
-                </ProtectedRoute>
+                <Layout>
+                  <Invoices />
+                </Layout>
               }
             />
             <Route path="/" element={<Navigate to="/dashboard" replace />} />

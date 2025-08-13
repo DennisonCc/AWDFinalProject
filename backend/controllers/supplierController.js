@@ -126,7 +126,7 @@ const createSupplier = async (req, res) => {
 
     await supplier.save();
 
-    logger.info(`Proveedor creado: ${company} (${supplier.supplierId}) por usuario ${req.user.userId}`);
+    logger.info(`Proveedor creado: ${company} (${supplier.supplierId}) por sistema`);
 
     res.status(201).json({
       success: true,
@@ -179,7 +179,7 @@ const updateSupplier = async (req, res) => {
 
     await supplier.save();
 
-    logger.info(`Proveedor actualizado: ${supplier.company} (${supplier.supplierId}) por usuario ${req.user.userId}`);
+    logger.info(`Proveedor actualizado: ${supplier.company} (${supplier.supplierId}) por usuario ${'sistema'}`);
 
     res.json({
       success: true,
@@ -226,7 +226,7 @@ const deleteSupplier = async (req, res) => {
     supplier.status = 'inactive';
     await supplier.save();
 
-    logger.info(`Proveedor eliminado: ${supplier.company} (${supplier.supplierId}) por usuario ${req.user.userId}`);
+    logger.info(`Proveedor eliminado: ${supplier.company} (${supplier.supplierId}) por usuario ${'sistema'}`);
 
     res.json({
       success: true,
@@ -327,7 +327,7 @@ const addToCatalog = async (req, res) => {
     supplier.catalog.push(productData);
     await supplier.save();
 
-    logger.info(`Producto agregado al catálogo: ${productData.productName} al proveedor ${supplier.company} por usuario ${req.user.userId}`);
+    logger.info(`Producto agregado al catálogo: ${productData.productName} al proveedor ${supplier.company} por usuario ${'sistema'}`);
 
     res.status(201).json({
       success: true,
@@ -376,7 +376,7 @@ const updateCatalogProduct = async (req, res) => {
     supplier.catalog[productIndex] = { ...supplier.catalog[productIndex].toObject(), ...updateData };
     await supplier.save();
 
-    logger.info(`Producto del catálogo actualizado: ${productId} del proveedor ${supplier.company} por usuario ${req.user.userId}`);
+    logger.info(`Producto del catálogo actualizado: ${productId} del proveedor ${supplier.company} por usuario ${'sistema'}`);
 
     res.json({
       success: true,

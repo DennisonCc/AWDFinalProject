@@ -174,7 +174,7 @@ const loginUser = async (req, res) => {
 // @access  Private
 const getProfile = async (req, res) => {
   try {
-    const user = await User.findOne({ userId: req.user.userId });
+    const user = await User.findOne({ userId: 'sistema' });
 
     if (!user) {
       return res.status(404).json({
@@ -215,7 +215,7 @@ const updateProfile = async (req, res) => {
   try {
     const { firstName, lastName, phone, settings } = req.body;
 
-    const user = await User.findOne({ userId: req.user.userId });
+    const user = await User.findOne({ userId: 'sistema' });
 
     if (!user) {
       return res.status(404).json({
@@ -269,7 +269,7 @@ const changePassword = async (req, res) => {
       });
     }
 
-    const user = await User.findOne({ userId: req.user.userId }).select('+password');
+    const user = await User.findOne({ userId: 'sistema' }).select('+password');
 
     if (!user) {
       return res.status(404).json({

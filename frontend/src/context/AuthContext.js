@@ -1,5 +1,4 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
-import authService from '../services/authService';
+import React, { createContext, useState, useContext } from 'react';
 
 const AuthContext = createContext();
 
@@ -12,43 +11,18 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // Verificar si hay un usuario autenticado al cargar la aplicación
-    const checkAuth = () => {
-      const currentUser = authService.getCurrentUser();
-      const token = authService.getToken();
-      
-      if (currentUser && token) {
-        setUser(currentUser);
-        setIsAuthenticated(true);
-      }
-      setLoading(false);
-    };
-
-    checkAuth();
-  }, []);
+  const [user, setUser] = useState({ username: 'admin', role: 'admin' });
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [loading] = useState(false);
 
   const login = async (credentials) => {
-    try {
-      const { user, token } = await authService.login(credentials);
-      setUser(user);
-      setIsAuthenticated(true);
-      return { success: true, user, token };
-    } catch (error) {
-      console.error('Error en login:', error);
-      return { 
-        success: false, 
-        message: error.message || 'Error en el login' 
-      };
-    }
+    // Sin autenticación real, simplemente "logueamos" al usuario
+    setUser({ username: 'admin', role: 'admin' });
+    setIsAuthenticated(true);
+    return { success: true, user: { username: 'admin', role: 'admin' } };
   };
 
   const logout = () => {
-    authService.logout();
     setUser(null);
     setIsAuthenticated(false);
   };

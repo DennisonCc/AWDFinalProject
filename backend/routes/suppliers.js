@@ -10,46 +10,45 @@ const {
   addToCatalog,
   updateCatalogProduct
 } = require('../controllers/supplierController');
-const { protect, authorize } = require('../middleware/auth');
 
 // @route   GET /api/suppliers
 // @desc    Obtener todos los proveedores
-// @access  Private
-router.get('/', protect, getSuppliers);
+// @access  Public
+router.get('/', getSuppliers);
 
 // @route   GET /api/suppliers/:id
 // @desc    Obtener un proveedor por ID
-// @access  Private
-router.get('/:id', protect, getSupplierById);
+// @access  Public
+router.get('/:id', getSupplierById);
 
 // @route   POST /api/suppliers
 // @desc    Crear nuevo proveedor
-// @access  Private (requiere permisos de suppliers:write)
-router.post('/', protect, authorize('suppliers:write'), createSupplier);
+// @access  Public
+router.post('/', createSupplier);
 
 // @route   PUT /api/suppliers/:id
 // @desc    Actualizar proveedor
-// @access  Private (requiere permisos de suppliers:write)
-router.put('/:id', protect, authorize('suppliers:write'), updateSupplier);
+// @access  Public
+router.put('/:id', updateSupplier);
 
 // @route   DELETE /api/suppliers/:id
 // @desc    Eliminar proveedor (soft delete)
-// @access  Private (requiere permisos de suppliers:delete)
-router.delete('/:id', protect, authorize('suppliers:delete'), deleteSupplier);
+// @access  Public
+router.delete('/:id', deleteSupplier);
 
 // @route   GET /api/suppliers/:id/catalog
 // @desc    Obtener catálogo de un proveedor
-// @access  Private
-router.get('/:id/catalog', protect, getSupplierCatalog);
+// @access  Public
+router.get('/:id/catalog', getSupplierCatalog);
 
 // @route   POST /api/suppliers/:id/catalog
 // @desc    Agregar producto al catálogo del proveedor
-// @access  Private (requiere permisos de suppliers:write)
-router.post('/:id/catalog', protect, authorize('suppliers:write'), addToCatalog);
+// @access  Public
+router.post('/:id/catalog', addToCatalog);
 
 // @route   PUT /api/suppliers/:id/catalog/:productId
 // @desc    Actualizar producto del catálogo
-// @access  Private (requiere permisos de suppliers:write)
-router.put('/:id/catalog/:productId', protect, authorize('suppliers:write'), updateCatalogProduct);
+// @access  Public
+router.put('/:id/catalog/:productId', updateCatalogProduct);
 
 module.exports = router;

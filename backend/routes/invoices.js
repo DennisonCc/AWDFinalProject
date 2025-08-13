@@ -9,41 +9,40 @@ const {
   deleteInvoice,
   getInvoiceStats
 } = require('../controllers/invoiceController');
-const { protect, authorize } = require('../middleware/auth');
 
 // @route   GET /api/invoices/stats
 // @desc    Obtener estadísticas de facturas
-// @access  Private
-router.get('/stats', protect, getInvoiceStats);
+// @access  Public
+router.get('/stats', getInvoiceStats);
 
 // @route   GET /api/invoices
 // @desc    Obtener todas las facturas
-// @access  Private
-router.get('/', protect, getInvoices);
+// @access  Public
+router.get('/', getInvoices);
 
 // @route   GET /api/invoices/:id
 // @desc    Obtener una factura por ID
-// @access  Private
-router.get('/:id', protect, getInvoiceById);
+// @access  Public
+router.get('/:id', getInvoiceById);
 
 // @route   POST /api/invoices
 // @desc    Crear nueva factura
-// @access  Private (requiere permisos de invoices:write)
-router.post('/', protect, authorize('invoices:write'), createInvoice);
+// @access  Public
+router.post('/', createInvoice);
 
 // @route   PUT /api/invoices/:id/status
 // @desc    Actualizar estado de factura
-// @access  Private (requiere permisos de invoices:write)
-router.put('/:id/status', protect, authorize('invoices:write'), updateInvoiceStatus);
+// @access  Public
+router.put('/:id/status', updateInvoiceStatus);
 
 // @route   PUT /api/invoices/:id/payment
 // @desc    Actualizar estado de pago
-// @access  Private (requiere permisos de invoices:write)
-router.put('/:id/payment', protect, authorize('invoices:write'), updatePaymentStatus);
+// @access  Public
+router.put('/:id/payment', updatePaymentStatus);
 
 // @route   DELETE /api/invoices/:id
 // @desc    Eliminar factura (solo en estado draft)
-// @access  Private (requiere permisos de invoices:delete)
-router.delete('/:id', protect, authorize('invoices:delete'), deleteInvoice);
+// @access  Public
+router.delete('/:id', deleteInvoice);
 
 module.exports = router;

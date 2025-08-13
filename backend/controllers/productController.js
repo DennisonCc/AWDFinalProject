@@ -172,7 +172,7 @@ const createProduct = async (req, res) => {
 
     await product.save();
 
-    logger.info(`Producto creado: ${name} (${product.productId}) por usuario ${req.user.userId}`);
+    logger.info(`Producto creado: ${name} (${product.productId}) por usuario ${'sistema'}`);
 
     res.status(201).json({
       success: true,
@@ -270,7 +270,7 @@ const updateProduct = async (req, res) => {
 
     await product.save();
 
-    logger.info(`Producto actualizado: ${product.name} (${product.productId}) por usuario ${req.user.userId}`);
+    logger.info(`Producto actualizado: ${product.name} (${product.productId}) por usuario ${'sistema'}`);
 
     res.json({
       success: true,
@@ -317,7 +317,7 @@ const deleteProduct = async (req, res) => {
     product.status = 'discontinued';
     await product.save();
 
-    logger.info(`Producto eliminado: ${product.name} (${product.productId}) por usuario ${req.user.userId}`);
+    logger.info(`Producto eliminado: ${product.name} (${product.productId}) por usuario ${'sistema'}`);
 
     res.json({
       success: true,
@@ -395,12 +395,12 @@ const updateInventory = async (req, res) => {
       previousStock: previousStock,
       newStock: newStock,
       reason: reason || `Ajuste de inventario: ${operation}`,
-      userId: req.user.userId
+      userId: 'sistema'
     });
 
     await product.save();
 
-    logger.info(`Inventario actualizado: ${product.name} (${product.productId}) - ${operation} ${quantity} unidades por usuario ${req.user.userId}`);
+    logger.info(`Inventario actualizado: ${product.name} (${product.productId}) - ${operation} ${quantity} unidades por usuario ${'sistema'}`);
 
     res.json({
       success: true,
