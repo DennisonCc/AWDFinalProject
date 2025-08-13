@@ -36,26 +36,18 @@ const Suppliers = () => {
   const [notification, setNotification] = useState({ open: false, message: '', severity: 'success' });
   
   const [formData, setFormData] = useState({
-    company: '',
-    identificationNumber: '',
-    contactName: '',
+    name: '',
     email: '',
     phone: '',
-    bankAccount: '',
-    bankName: '',
-    address: {
-      street: '',
-      city: '',
-      state: '',
-      country: 'Colombia'
-    }
+    address: '',
+    country: ''
   });
 
   const loadSuppliers = async () => {
     setLoading(true);
     try {
       const response = await supplierService.getAll(1, 50, searchTerm);
-      setSuppliers(response.data || []);
+      setSuppliers(response.docs || response.suppliers || []);
     } catch (error) {
       showNotification('Error al cargar proveedores', 'error');
     } finally {
@@ -71,6 +63,45 @@ const Suppliers = () => {
     setNotification({ open: true, message, severity });
   };
 
+  const handleCloseNotification = () => {
+    setNotification({ ...notification, open: false });
+  };
+
+  const handleOpenDialog = (supplier = null) => {
+    if (supplier) {
+      setEditingSupplier(supplier);
+      setFormData({
+        name: supplier.name || '',
+        email: supplier.email || '',
+        phone: supplier.phone || '',
+        address: supplier.address || '',
+        country: supplier.country || ''
+      });
+    } else {
+      setEditingSupplier(null);
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        address: '',
+        country: ''
+      });
+    }
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setEditingSupplier(null);
+  };
+
+  const handleInputChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
   const handleSubmit = async () => {
     try {
       if (editingSupplier) {
@@ -80,11 +111,22 @@ const Suppliers = () => {
         await supplierService.create(formData);
         showNotification('Proveedor creado exitosamente');
       }
-      setOpenDialog(false);
-      setEditingSupplier(null);
+      handleCloseDialog();
       loadSuppliers();
     } catch (error) {
       showNotification(error.message || 'Error al guardar proveedor', 'error');
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm('¿Está seguro de que desea eliminar este proveedor?')) {
+      try {
+        await supplierService.delete(id);
+        showNotification('Proveedor eliminado exitosamente');
+        loadSuppliers();
+      } catch (error) {
+        showNotification(error.message || 'Error al eliminar proveedor', 'error');
+      }
     }
   };
 
@@ -97,7 +139,7 @@ const Suppliers = () => {
         <Button
           variant="contained"
           startIcon={<AddIcon />}
-          onClick={() => setOpenDialog(true)}
+          onClick={() => handleOpenDialog()}
         >
           Nuevo Proveedor
         </Button>
@@ -127,7 +169,7 @@ const Suppliers = () => {
                   <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                     <BusinessIcon sx={{ mr: 1, color: 'primary.main' }} />
                     <Typography variant="h6" component="h2">
-                      {supplier.company}
+                      {supplier.name}
                     </Typography>
                   </Box>
                   
@@ -140,25 +182,31 @@ const Suppliers = () => {
                   </Typography>
                   
                   <Typography variant="body2" color="textSecondary">
-                    📍 {supplier.address?.city}, {supplier.address?.country}
+                    📍 {supplier.address}
                   </Typography>
                   
-                  {supplier.contactName && (
-                    <Box sx={{ mt: 1 }}>
-                      <Chip 
-                        label={`Contacto: ${supplier.contactName}`} 
-                        size="small" 
-                        variant="outlined" 
-                      />
-                    </Box>
-                  )}
+                  <Box sx={{ mt: 1 }}>
+                    <Chip 
+                      label={`País: ${supplier.country}`} 
+                      size="small" 
+                      variant="outlined" 
+                    />
+                  </Box>
                 </CardContent>
                 
                 <CardActions>
-                  <IconButton size="small" color="primary">
+                  <IconButton 
+                    size="small" 
+                    color="primary"
+                    onClick={() => handleOpenDialog(supplier)}
+                  >
                     <EditIcon />
                   </IconButton>
-                  <IconButton size="small" color="error">
+                  <IconButton 
+                    size="small" 
+                    color="error"
+                    onClick={() => handleDelete(supplier._id)}
+                  >
                     <DeleteIcon />
                   </IconButton>
                 </CardActions>
@@ -180,8 +228,8 @@ const Suppliers = () => {
         </Paper>
       )}
 
-      {/* Dialog para crear proveedor */}
-      <Dialog open={openDialog} onClose={() => setOpenDialog(false)} maxWidth="sm" fullWidth>
+      {/* Dialog para crear/editar proveedor */}
+      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
         <DialogTitle>
           {editingSupplier ? 'Editar Proveedor' : 'Nuevo Proveedor'}
         </DialogTitle>
@@ -191,29 +239,9 @@ const Suppliers = () => {
               <TextField
                 fullWidth
                 label="Nombre de la empresa"
-                name="company"
-                value={formData.company}
-                onChange={(e) => setFormData({...formData, company: e.target.value})}
-                required
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="Número de identificación"
-                name="identificationNumber"
-                value={formData.identificationNumber}
-                onChange={(e) => setFormData({...formData, identificationNumber: e.target.value})}
-                required
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="Persona de contacto"
-                name="contactName"
-                value={formData.contactName}
-                onChange={(e) => setFormData({...formData, contactName: e.target.value})}
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
                 required
               />
             </Grid>
@@ -224,7 +252,8 @@ const Suppliers = () => {
                 name="email"
                 type="email"
                 value={formData.email}
-                onChange={(e) => setFormData({...formData, email: e.target.value})}
+                onChange={handleInputChange}
+                required
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -233,27 +262,7 @@ const Suppliers = () => {
                 label="Teléfono"
                 name="phone"
                 value={formData.phone}
-                onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                required
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="Cuenta bancaria"
-                name="bankAccount"
-                value={formData.bankAccount}
-                onChange={(e) => setFormData({...formData, bankAccount: e.target.value})}
-                required
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="Nombre del banco"
-                name="bankName"
-                value={formData.bankName}
-                onChange={(e) => setFormData({...formData, bankName: e.target.value})}
+                onChange={handleInputChange}
                 required
               />
             </Grid>
@@ -261,46 +270,28 @@ const Suppliers = () => {
               <TextField
                 fullWidth
                 label="Dirección"
-                name="street"
-                value={formData.address.street}
-                onChange={(e) => setFormData({...formData, address: {...formData.address, street: e.target.value}})}
+                name="address"
+                value={formData.address}
+                onChange={handleInputChange}
+                multiline
+                rows={2}
                 required
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="Ciudad"
-                name="city"
-                value={formData.address.city}
-                onChange={(e) => setFormData({...formData, address: {...formData.address, city: e.target.value}})}
-                required
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="Estado/Provincia"
-                name="state"
-                value={formData.address.state}
-                onChange={(e) => setFormData({...formData, address: {...formData.address, state: e.target.value}})}
-                required
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
               <TextField
                 fullWidth
                 label="País"
                 name="country"
-                value={formData.address.country}
-                onChange={(e) => setFormData({...formData, address: {...formData.address, country: e.target.value}})}
+                value={formData.country}
+                onChange={handleInputChange}
                 required
               />
             </Grid>
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenDialog(false)}>Cancelar</Button>
+          <Button onClick={handleCloseDialog}>Cancelar</Button>
           <Button onClick={handleSubmit} variant="contained">
             {editingSupplier ? 'Actualizar' : 'Crear'}
           </Button>
@@ -311,10 +302,10 @@ const Suppliers = () => {
       <Snackbar
         open={notification.open}
         autoHideDuration={6000}
-        onClose={() => setNotification({...notification, open: false})}
+        onClose={handleCloseNotification}
       >
         <Alert 
-          onClose={() => setNotification({...notification, open: false})} 
+          onClose={handleCloseNotification} 
           severity={notification.severity}
           sx={{ width: '100%' }}
         >

@@ -5,7 +5,7 @@ import { CssBaseline } from '@mui/material';
 import { AuthProvider } from './context/AuthContext';
 import Layout from './components/Layout/Layout';
 import Dashboard from './pages/Dashboard/Dashboard';
-import Suppliers from './pages/Suppliers/SuppliersSimple';
+import Suppliers from './pages/Suppliers/SuppliersSimple_New';
 import Clients from './pages/Clients/Clients';
 import Products from './pages/Products/Products';
 import Invoices from './pages/Invoices/Invoices';
@@ -13,7 +13,7 @@ import Invoices from './pages/Invoices/Invoices';
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#1976d2',
+      main: '#f11185ff',
     },
     secondary: {
       main: '#dc004e',
