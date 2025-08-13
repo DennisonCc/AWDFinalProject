@@ -60,16 +60,6 @@ const Suppliers = () => {
   useEffect(() => {
     loadSuppliers();
   }, [searchTerm]); // eslint-disable-line react-hooks/exhaustive-deps
-    setLoading(true);
-    try {
-      const response = await supplierService.getAll(1, 50, searchTerm);
-      setSuppliers(response.docs || response.suppliers || []);
-    } catch (error) {
-      showNotification('Error al cargar proveedores', 'error');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const showNotification = (message, severity = 'success') => {
     setNotification({ open: true, message, severity });
