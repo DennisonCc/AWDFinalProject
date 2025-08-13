@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 // Esquema para información personal
 const personalInfoSchema = new mongoose.Schema({
@@ -212,6 +213,9 @@ clientSchema.methods.getTotalPurchases = function() {
     return invoice.status === 'paid' ? total + invoice.amount : total;
   }, 0);
 };
+
+// Agregar plugin de paginación
+clientSchema.plugin(mongoosePaginate);
 
 const Client = mongoose.model('Client', clientSchema);
 

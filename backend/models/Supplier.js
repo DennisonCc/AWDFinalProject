@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 // Esquema para productos del catálogo del proveedor
 const catalogProductSchema = new mongoose.Schema({
@@ -200,6 +201,9 @@ supplierSchema.methods.updateProduct = function(productId, updateData) {
 supplierSchema.statics.findByStatus = function(status) {
   return this.find({ status });
 };
+
+// Agregar plugin de paginación
+supplierSchema.plugin(mongoosePaginate);
 
 const Supplier = mongoose.model('Supplier', supplierSchema);
 

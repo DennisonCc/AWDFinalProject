@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 // Esquema para información del cliente en la factura
 const clientInfoSchema = new mongoose.Schema({
@@ -361,6 +362,9 @@ invoiceSchema.statics.getTotalSales = function(startDate, endDate) {
     }
   ]);
 };
+
+// Agregar plugin de paginación
+invoiceSchema.plugin(mongoosePaginate);
 
 const Invoice = mongoose.model('Invoice', invoiceSchema);
 

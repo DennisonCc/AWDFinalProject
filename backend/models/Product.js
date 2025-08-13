@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2');
 
 // Esquema para información de precios
 const pricingSchema = new mongoose.Schema({
@@ -251,6 +252,9 @@ productSchema.statics.findLowStock = function() {
 productSchema.statics.findByCategory = function(category) {
   return this.find({ category, status: 'active' });
 };
+
+// Agregar plugin de paginación
+productSchema.plugin(mongoosePaginate);
 
 const Product = mongoose.model('Product', productSchema);
 
