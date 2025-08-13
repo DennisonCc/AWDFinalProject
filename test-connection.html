@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Backend Connection</title>
+</head>
+<body>
+    <h1>Test de Conexión al Backend</h1>
+    <button onclick="testBackend()">Probar Conexión</button>
+    <div id="result"></div>
+
+    <script>
+        async function testBackend() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<p>Probando conexión...</p>';
+            
+            try {
+                // Test 1: Ping general
+                console.log('🔍 Probando conexión general...');
+                const response = await fetch('http://localhost:3001/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: 'admin',
+                        password: 'admin123'
+                    })
+                });
+
+                console.log('📋 Status:', response.status);
+                const data = await response.json();
+                console.log('📋 Data:', data);
+
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <h3>✅ Conexión exitosa!</h3>
+                        <p><strong>Status:</strong> ${response.status}</p>
+                        <p><strong>Token:</strong> ${data.token ? 'Recibido' : 'No recibido'}</p>
+                        <p><strong>Usuario:</strong> ${data.data ? data.data.username : 'No recibido'}</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <h3>❌ Error en la respuesta</h3>
+                        <p><strong>Status:</strong> ${response.status}</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                }
+            } catch (error) {
+                console.error('❌ Error:', error);
+                resultDiv.innerHTML = `
+                    <h3>❌ Error de conexión</h3>
+                    <p><strong>Error:</strong> ${error.message}</p>
+                    <p>Verifica que el backend esté corriendo en http://localhost:3001</p>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

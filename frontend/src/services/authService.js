@@ -4,8 +4,26 @@ export const authService = {
   // Login
   login: async (credentials) => {
     try {
+      console.log('🔐 Intentando login con:', credentials);
       const response = await api.post('/auth/login', credentials);
-      const { token, user } = response.data;
+      
+      console.log('📋 Respuesta del backend:', response.data);
+      
+      // El backend devuelve: { success, message, data, token }
+      const { token, data: user } = response.data;
+      
+      if (!token) {
+        console.error('❌ No se recibió token en la respuesta');
+        throw { message: 'No se recibió token de autenticación' };
+      }
+      
+      if (!user) {
+        console.error('❌ No se recibieron datos de usuario');
+        throw { message: 'No se recibieron datos de usuario' };
+      }
+      
+      console.log('✅ Login exitoso, guardando datos...');
+      console.log('👤 Usuario:', user);
       
       // Guardar token y usuario en localStorage
       localStorage.setItem('token', token);
@@ -13,7 +31,8 @@ export const authService = {
       
       return { token, user };
     } catch (error) {
-      throw error.response?.data || { message: 'Error en el login' };
+      console.error('❌ Error en login:', error);
+      throw error.response?.data || { message: error.message || 'Error en el login' };
     }
   },
 
