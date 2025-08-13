@@ -1,4 +1,4 @@
-const { Supplier } = require('../models');
+const Supplier = require('../models/Supplier');
 const logger = require('../utils/logger');
 
 // @desc    Obtener todos los proveedores
@@ -13,9 +13,9 @@ const getSuppliers = async (req, res) => {
     
     if (search) {
       filters.$or = [
-        { company: { $regex: search, $options: 'i' } },
-        { contactName: { $regex: search, $options: 'i' } },
-        { email: { $regex: search, $options: 'i' } }
+        { name: { $regex: search, $options: 'i' } },
+        { email: { $regex: search, $options: 'i' } },
+        { phone: { $regex: search, $options: 'i' } }
       ];
     }
 
@@ -23,7 +23,7 @@ const getSuppliers = async (req, res) => {
     const options = {
       page: parseInt(page),
       limit: parseInt(limit),
-      sort: { company: 1 }
+      sort: { name: 1 }
     };
 
     const suppliers = await Supplier.paginate(filters, options);
@@ -85,41 +85,35 @@ const getSupplierById = async (req, res) => {
 const createSupplier = async (req, res) => {
   try {
     const {
-      company,
-      identificationNumber,
-      contactName,
+      name,
       email,
       phone,
-      bankAccount,
-      bankName,
-      address
+      address,
+      country
     } = req.body;
 
-    // Verificar si ya existe un proveedor con el mismo número de identificación
-    const existingSupplier = await Supplier.findOne({ identificationNumber });
+    // Verificar si ya existe un proveedor con el mismo email
+    const existingSupplier = await Supplier.findOne({ email });
 
     if (existingSupplier) {
       return res.status(400).json({
         success: false,
-        message: 'Ya existe un proveedor con ese número de identificación'
+        message: 'Ya existe un proveedor con ese email'
       });
     }
 
     // Crear nuevo proveedor
     const supplier = new Supplier({
-      company,
-      identificationNumber,
-      contactName,
+      name,
       email,
       phone,
-      bankAccount,
-      bankName,
-      address
+      address,
+      country: country || 'Colombia'
     });
 
     await supplier.save();
 
-    logger.info(`Proveedor creado: ${company} por sistema`);
+    logger.info(`Proveedor creado: ${name} por sistema`);
 
     res.status(201).json({
       success: true,
@@ -172,7 +166,7 @@ const updateSupplier = async (req, res) => {
 
     await supplier.save();
 
-    logger.info(`Proveedor actualizado: ${supplier.company} por sistema`);
+    logger.info(`Proveedor actualizado: ${supplier.name} por sistema`);
 
     res.json({
       success: true,
@@ -215,7 +209,7 @@ const deleteSupplier = async (req, res) => {
       });
     }
 
-    logger.info(`Proveedor eliminado: ${supplier.company} por sistema`);
+    logger.info(`Proveedor eliminado: ${supplier.name} por sistema`);
 
     res.json({
       success: true,

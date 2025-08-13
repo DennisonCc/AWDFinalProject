@@ -5,27 +5,8 @@ const {
   getProductById,
   createProduct,
   updateProduct,
-  deleteProduct,
-  updateInventory,
-  getLowStockProducts,
-  getCategories,
-  searchProducts
+  deleteProduct
 } = require('../controllers/productController');
-
-// @route   GET /api/products/search
-// @desc    Buscar productos por diferentes criterios
-// @access  Public
-router.get('/search', searchProducts);
-
-// @route   GET /api/products/categories
-// @desc    Obtener categorías de productos
-// @access  Public
-router.get('/categories', getCategories);
-
-// @route   GET /api/products/low-stock
-// @desc    Obtener productos con bajo stock
-// @access  Public
-router.get('/low-stock', getLowStockProducts);
 
 // @route   GET /api/products
 // @desc    Obtener todos los productos
@@ -48,13 +29,8 @@ router.post('/', createProduct);
 router.put('/:id', updateProduct);
 
 // @route   DELETE /api/products/:id
-// @desc    Eliminar producto (soft delete)
+// @desc    Eliminar producto
 // @access  Public
 router.delete('/:id', deleteProduct);
-
-// @route   PUT /api/products/:id/inventory
-// @desc    Actualizar inventario de producto
-// @access  Public
-router.put('/:id/inventory', updateInventory);
 
 module.exports = router;

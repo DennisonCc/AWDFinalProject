@@ -40,10 +40,7 @@ const Clients = () => {
     email: '',
     phone: '',
     address: '',
-    city: '',
-    country: '',
-    documentType: 'DNI',
-    documentNumber: ''
+    document: ''
   });
 
   const loadClients = async () => {
@@ -82,10 +79,7 @@ const Clients = () => {
         email: '',
         phone: '',
         address: '',
-        city: '',
-        country: '',
-        documentType: 'DNI',
-        documentNumber: ''
+        document: ''
       });
       loadClients();
     } catch (error) {
@@ -100,10 +94,7 @@ const Clients = () => {
       email: client.email || '',
       phone: client.phone || '',
       address: client.address || '',
-      city: client.city || '',
-      country: client.country || '',
-      documentType: client.documentType || 'DNI',
-      documentNumber: client.documentNumber || ''
+      document: client.document || ''
     });
     setOpenDialog(true);
   };
@@ -172,13 +163,13 @@ const Clients = () => {
                   </Typography>
                   
                   <Typography variant="body2" color="textSecondary">
-                    📍 {client.city}, {client.country}
+                    📍 {client.address}
                   </Typography>
                   
-                  {client.documentNumber && (
+                  {client.document && (
                     <Box sx={{ mt: 1 }}>
                       <Chip 
-                        label={`${client.documentType}: ${client.documentNumber}`} 
+                        label={`Documento: ${client.document}`} 
                         size="small" 
                         variant="outlined" 
                       />
@@ -255,31 +246,6 @@ const Clients = () => {
                 required
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                select
-                label="Tipo de documento"
-                value={formData.documentType}
-                onChange={(e) => setFormData({...formData, documentType: e.target.value})}
-                SelectProps={{
-                  native: true,
-                }}
-              >
-                <option value="DNI">DNI</option>
-                <option value="RUC">RUC</option>
-                <option value="Pasaporte">Pasaporte</option>
-                <option value="Carnet">Carnet de Extranjería</option>
-              </TextField>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="Número de documento"
-                value={formData.documentNumber}
-                onChange={(e) => setFormData({...formData, documentNumber: e.target.value})}
-              />
-            </Grid>
             <Grid item xs={12}>
               <TextField
                 fullWidth
@@ -288,22 +254,16 @@ const Clients = () => {
                 onChange={(e) => setFormData({...formData, address: e.target.value})}
                 multiline
                 rows={2}
+                required
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
               <TextField
                 fullWidth
-                label="Ciudad"
-                value={formData.city}
-                onChange={(e) => setFormData({...formData, city: e.target.value})}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="País"
-                value={formData.country}
-                onChange={(e) => setFormData({...formData, country: e.target.value})}
+                label="Documento"
+                value={formData.document}
+                onChange={(e) => setFormData({...formData, document: e.target.value})}
+                required
               />
             </Grid>
           </Grid>

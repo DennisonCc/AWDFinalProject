@@ -5,16 +5,8 @@ const {
   getClientById,
   createClient,
   updateClient,
-  deleteClient,
-  getClientInvoices,
-  getClientStats,
-  searchClients
+  deleteClient
 } = require('../controllers/clientController');
-
-// @route   GET /api/clients/search
-// @desc    Buscar clientes por diferentes criterios
-// @access  Public
-router.get('/search', searchClients);
 
 // @route   GET /api/clients
 // @desc    Obtener todos los clientes
@@ -37,18 +29,8 @@ router.post('/', createClient);
 router.put('/:id', updateClient);
 
 // @route   DELETE /api/clients/:id
-// @desc    Eliminar cliente (soft delete)
+// @desc    Eliminar cliente
 // @access  Public
 router.delete('/:id', deleteClient);
-
-// @route   GET /api/clients/:id/invoices
-// @desc    Obtener historial de facturas del cliente
-// @access  Public
-router.get('/:id/invoices', getClientInvoices);
-
-// @route   GET /api/clients/:id/stats
-// @desc    Obtener estadísticas del cliente
-// @access  Public
-router.get('/:id/stats', getClientStats);
 
 module.exports = router;

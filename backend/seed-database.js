@@ -1,231 +1,181 @@
-const mongoose = require('mongoose');
 require('dotenv').config();
-
-// Conectar a MongoDB
-const connectDB = async () => {
-  try {
-    await mongoose.connect(process.env.MONGODB_URI);
-    console.log('✅ Conectado a MongoDB Atlas');
-  } catch (error) {
-    console.error('❌ Error conectando a MongoDB:', error);
-    process.exit(1);
-  }
-};
-
-// Importar modelos
+const mongoose = require('mongoose');
 const Supplier = require('./models/Supplier');
 const Client = require('./models/Client');
 const Product = require('./models/Product');
 const Invoice = require('./models/Invoice');
 
-// Datos de ejemplo para Suppliers
-const suppliersData = [
-  {
-    company: 'Tecnología Global S.A.S',
-    identificationNumber: '900123456',
-    contactName: 'María García',
-    email: 'contacto@tecnologiaglobal.com',
-    phone: '+57 300 123 4567',
-    bankAccount: '123456789012',
-    bankName: 'Banco de Bogotá',
-    address: {
-      street: 'Calle 100 #15-23',
-      city: 'Bogotá',
-      state: 'Cundinamarca',
-      country: 'Colombia'
-    }
-  },
-  {
-    company: 'Distribuidora del Norte Ltda',
-    identificationNumber: '800987654',
-    contactName: 'Juan Rodríguez',
-    email: 'ventas@distribuidoranorte.com',
-    phone: '+57 301 987 6543',
-    bankAccount: '987654321098',
-    bankName: 'Bancolombia',
-    address: {
-      street: 'Carrera 50 #45-67',
-      city: 'Medellín',
-      state: 'Antioquia',
-      country: 'Colombia'
-    }
-  },
-  {
-    company: 'Suministros Industriales S.A',
-    identificationNumber: '900456789',
-    contactName: 'Ana López',
-    email: 'info@suministrosindustriales.com',
-    phone: '+57 302 456 7890',
-    bankAccount: '456789123456',
-    bankName: 'Banco Popular',
-    address: {
-      street: 'Avenida 68 #30-45',
-      city: 'Cali',
-      state: 'Valle del Cauca',
-      country: 'Colombia'
-    }
-  }
-];
-
-// Datos de ejemplo para Clients
-const clientsData = [
-  {
-    name: 'Carlos Mendoza',
-    email: 'carlos.mendoza@email.com',
-    phone: '+57 310 111 2222',
-    address: 'Calle 85 #12-34',
-    city: 'Bogotá',
-    country: 'Colombia',
-    documentType: 'Cedula',
-    documentNumber: '12345678'
-  },
-  {
-    name: 'Laura Fernández',
-    email: 'laura.fernandez@email.com',
-    phone: '+57 311 333 4444',
-    address: 'Carrera 45 #67-89',
-    city: 'Medellín',
-    country: 'Colombia',
-    documentType: 'Cedula',
-    documentNumber: '87654321'
-  },
-  {
-    name: 'Roberto Silva',
-    email: 'roberto.silva@email.com',
-    phone: '+57 312 555 6666',
-    address: 'Avenida 5 #23-45',
-    city: 'Cali',
-    country: 'Colombia',
-    documentType: 'DNI',
-    documentNumber: '11223344'
-  }
-];
-
-// Función para crear datos de ejemplo
-const seedDatabase = async () => {
+const connectDB = async () => {
   try {
-    console.log('🌱 Creando datos de ejemplo...');
+    console.log('🔄 Intentando conectar a MongoDB...');
+    console.log('URI:', process.env.MONGODB_URI?.substring(0, 20) + '...');
     
-    // Crear suppliers
-    console.log('📦 Creando proveedores...');
-    const suppliers = await Supplier.insertMany(suppliersData);
-    console.log(`✅ ${suppliers.length} proveedores creados`);
-    
-    // Crear clients
-    console.log('👥 Creando clientes...');
-    const clients = await Client.insertMany(clientsData);
-    console.log(`✅ ${clients.length} clientes creados`);
-    
-    // Crear products
-    console.log('🛍️ Creando productos...');
-    const productsData = [
-      {
-        name: 'Laptop Dell Inspiron 15',
-        description: 'Laptop para uso profesional con procesador Intel Core i5',
-        price: 2500000,
-        category: 'Electrónicos',
-        stock: 15,
-        minStock: 5,
-        supplier: suppliers[0]._id,
-        sku: 'LAP-001'
-      },
-      {
-        name: 'Mouse Inalámbrico Logitech',
-        description: 'Mouse inalámbrico ergonómico con batería de larga duración',
-        price: 85000,
-        category: 'Accesorios',
-        stock: 50,
-        minStock: 10,
-        supplier: suppliers[0]._id,
-        sku: 'MOU-001'
-      },
-      {
-        name: 'Silla de Oficina Ergonómica',
-        description: 'Silla ajustable con soporte lumbar para oficina',
-        price: 450000,
-        category: 'Muebles',
-        stock: 8,
-        minStock: 3,
-        supplier: suppliers[1]._id,
-        sku: 'SIL-001'
-      },
-      {
-        name: 'Monitor LED 24 pulgadas',
-        description: 'Monitor Full HD con conexión HDMI y VGA',
-        price: 650000,
-        category: 'Electrónicos',
-        stock: 20,
-        minStock: 5,
-        supplier: suppliers[2]._id,
-        sku: 'MON-001'
-      },
-      {
-        name: 'Teclado Mecánico RGB',
-        description: 'Teclado mecánico con iluminación RGB personalizable',
-        price: 320000,
-        category: 'Accesorios',
-        stock: 12,
-        minStock: 4,
-        supplier: suppliers[0]._id,
-        sku: 'TEC-001'
-      }
-    ];
-    
-    const products = await Product.insertMany(productsData);
-    console.log(`✅ ${products.length} productos creados`);
-    
-    // Crear invoices
-    console.log('🧾 Creando facturas...');
-    const invoicesData = [
-      {
-        client: clients[0]._id,
-        items: [
-          { product: products[0]._id, quantity: 1, price: 2500000 },
-          { product: products[1]._id, quantity: 2, price: 85000 }
-        ],
-        paymentStatus: 'paid',
-        dueDate: new Date('2025-09-15')
-      },
-      {
-        client: clients[1]._id,
-        items: [
-          { product: products[2]._id, quantity: 1, price: 450000 },
-          { product: products[3]._id, quantity: 1, price: 650000 }
-        ],
-        paymentStatus: 'pending',
-        dueDate: new Date('2025-09-20')
-      },
-      {
-        client: clients[2]._id,
-        items: [
-          { product: products[4]._id, quantity: 1, price: 320000 }
-        ],
-        paymentStatus: 'overdue',
-        dueDate: new Date('2025-08-10')
-      }
-    ];
-    
-    const invoices = await Invoice.insertMany(invoicesData);
-    console.log(`✅ ${invoices.length} facturas creadas`);
-    
-    console.log('🎉 Base de datos poblada exitosamente');
-    console.log(`📊 Resumen:`);
-    console.log(`   - ${suppliers.length} proveedores`);
-    console.log(`   - ${clients.length} clientes`);
-    console.log(`   - ${products.length} productos`);
-    console.log(`   - ${invoices.length} facturas`);
-    
-    process.exit(0);
+    await mongoose.connect(process.env.MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    });
+    console.log('✅ Conectado a MongoDB Atlas');
   } catch (error) {
-    console.error('❌ Error poblando base de datos:', error);
+    console.error('❌ Error de conexión:', error.message);
+    console.error('Stack:', error.stack);
     process.exit(1);
   }
 };
 
-// Ejecutar
-const run = async () => {
-  await connectDB();
-  await seedDatabase();
+// Datos simples para proveedores
+const suppliersData = [
+  {
+    name: "Proveedor Uno",
+    email: "proveedor1@email.com",
+    phone: "123456789",
+    address: "Calle 123",
+    country: "Colombia"
+  },
+  {
+    name: "Proveedor Dos",
+    email: "proveedor2@email.com",
+    phone: "987654321",
+    address: "Avenida 456",
+    country: "Mexico"
+  },
+  {
+    name: "Proveedor Tres",
+    email: "proveedor3@email.com",
+    phone: "555666777",
+    address: "Carrera 789",
+    country: "España"
+  }
+];
+
+// Datos simples para clientes
+const clientsData = [
+  {
+    name: "Cliente Uno",
+    email: "cliente1@email.com",
+    phone: "111222333",
+    address: "Calle Cliente 1",
+    document: "12345678"
+  },
+  {
+    name: "Cliente Dos",
+    email: "cliente2@email.com",
+    phone: "444555666",
+    address: "Avenida Cliente 2",
+    document: "87654321"
+  },
+  {
+    name: "Cliente Tres",
+    email: "cliente3@email.com",
+    phone: "777888999",
+    address: "Carrera Cliente 3",
+    document: "11223344"
+  }
+];
+
+// Datos simples para productos
+const productsData = [
+  {
+    name: "Producto A",
+    description: "Descripción del producto A",
+    price: 100.50,
+    category: "Categoria 1",
+    stock: 50
+  },
+  {
+    name: "Producto B",
+    description: "Descripción del producto B",
+    price: 250.75,
+    category: "Categoria 2",
+    stock: 30
+  },
+  {
+    name: "Producto C",
+    description: "Descripción del producto C",
+    price: 75.25,
+    category: "Categoria 1",
+    stock: 100
+  }
+];
+
+// Datos simples para facturas
+const invoicesData = [
+  {
+    clientName: "Cliente Uno",
+    clientEmail: "cliente1@email.com",
+    product: "Producto A",
+    quantity: 2,
+    total: 201.00
+  },
+  {
+    clientName: "Cliente Dos",
+    clientEmail: "cliente2@email.com",
+    product: "Producto B",
+    quantity: 1,
+    total: 250.75
+  },
+  {
+    clientName: "Cliente Tres",
+    clientEmail: "cliente3@email.com",
+    product: "Producto C",
+    quantity: 3,
+    total: 225.75
+  }
+];
+
+const seedDatabase = async () => {
+  try {
+    console.log('🗑️ Limpiando base de datos...');
+    
+    // Limpiar todas las colecciones
+    await Supplier.deleteMany({});
+    await Client.deleteMany({});
+    await Product.deleteMany({});
+    await Invoice.deleteMany({});
+    
+    console.log('✅ Base de datos limpiada');
+
+    // Insertar proveedores
+    console.log('📦 Insertando proveedores...');
+    const suppliers = await Supplier.insertMany(suppliersData);
+    console.log(`✅ ${suppliers.length} proveedores insertados`);
+
+    // Insertar clientes
+    console.log('👥 Insertando clientes...');
+    const clients = await Client.insertMany(clientsData);
+    console.log(`✅ ${clients.length} clientes insertados`);
+
+    // Insertar productos
+    console.log('🛍️ Insertando productos...');
+    const products = await Product.insertMany(productsData);
+    console.log(`✅ ${products.length} productos insertados`);
+
+    // Insertar facturas
+    console.log('📄 Insertando facturas...');
+    const invoices = await Invoice.insertMany(invoicesData);
+    console.log(`✅ ${invoices.length} facturas insertadas`);
+
+    console.log('🎉 ¡Base de datos sembrada exitosamente!');
+    
+  } catch (error) {
+    console.error('❌ Error sembrando la base de datos:', error);
+  } finally {
+    await mongoose.connection.close();
+    console.log('🔌 Conexión cerrada');
+  }
 };
 
-run();
+const runSeed = async () => {
+  console.log('🚀 Iniciando proceso de siembra...');
+  try {
+    await connectDB();
+    await seedDatabase();
+    console.log('🎯 Proceso completado exitosamente');
+  } catch (error) {
+    console.error('💥 Error en el proceso:', error.message);
+    console.error('Stack completo:', error.stack);
+    process.exit(1);
+  }
+};
+
+console.log('📋 Ejecutando script de siembra...');
+runSeed();

@@ -5,10 +5,7 @@ const {
   getSupplierById,
   createSupplier,
   updateSupplier,
-  deleteSupplier,
-  getSupplierCatalog,
-  addToCatalog,
-  updateCatalogProduct
+  deleteSupplier
 } = require('../controllers/supplierController');
 
 // @route   GET /api/suppliers
@@ -35,20 +32,5 @@ router.put('/:id', updateSupplier);
 // @desc    Eliminar proveedor (soft delete)
 // @access  Public
 router.delete('/:id', deleteSupplier);
-
-// @route   GET /api/suppliers/:id/catalog
-// @desc    Obtener catálogo de un proveedor
-// @access  Public
-router.get('/:id/catalog', getSupplierCatalog);
-
-// @route   POST /api/suppliers/:id/catalog
-// @desc    Agregar producto al catálogo del proveedor
-// @access  Public
-router.post('/:id/catalog', addToCatalog);
-
-// @route   PUT /api/suppliers/:id/catalog/:productId
-// @desc    Actualizar producto del catálogo
-// @access  Public
-router.put('/:id/catalog/:productId', updateCatalogProduct);
 
 module.exports = router;

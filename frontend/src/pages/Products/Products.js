@@ -28,9 +28,7 @@ import {
   Edit as EditIcon,
   Delete as DeleteIcon,
   Search as SearchIcon,
-  Inventory as InventoryIcon,
-  AddCircle as AddStockIcon,
-  RemoveCircle as RemoveStockIcon
+  Inventory as InventoryIcon
 } from '@mui/icons-material';
 import productService from '../../services/productService';
 
@@ -38,9 +36,7 @@ const Products = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
-  const [openStockDialog, setOpenStockDialog] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
-  const [stockProduct, setStockProduct] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [notification, setNotification] = useState({ open: false, message: '', severity: 'success' });
   
@@ -49,15 +45,7 @@ const Products = () => {
     description: '',
     price: '',
     category: '',
-    stock: '',
-    minStock: '',
-    supplier: '',
-    sku: ''
-  });
-
-  const [stockData, setStockData] = useState({
-    quantity: '',
-    operation: 'add'
+    stock: ''
   });
 
   const categories = [
@@ -98,8 +86,7 @@ const Products = () => {
       const productData = {
         ...formData,
         price: parseFloat(formData.price),
-        stock: parseInt(formData.stock),
-        minStock: parseInt(formData.minStock)
+        stock: parseInt(formData.stock)
       };
 
       if (editingProduct) {
@@ -118,33 +105,13 @@ const Products = () => {
     }
   };
 
-  const handleStockUpdate = async () => {
-    try {
-      await productService.updateStock(
-        stockProduct._id, 
-        parseInt(stockData.quantity), 
-        stockData.operation
-      );
-      showNotification(`Stock ${stockData.operation === 'add' ? 'aumentado' : 'reducido'} exitosamente`);
-      setOpenStockDialog(false);
-      setStockProduct(null);
-      setStockData({ quantity: '', operation: 'add' });
-      loadProducts();
-    } catch (error) {
-      showNotification(error.message || 'Error al actualizar stock', 'error');
-    }
-  };
-
   const resetForm = () => {
     setFormData({
       name: '',
       description: '',
       price: '',
       category: '',
-      stock: '',
-      minStock: '',
-      supplier: '',
-      sku: ''
+      stock: ''
     });
   };
 
@@ -155,17 +122,9 @@ const Products = () => {
       description: product.description || '',
       price: product.price || '',
       category: product.category || '',
-      stock: product.stock || '',
-      minStock: product.minStock || '',
-      supplier: product.supplier || '',
-      sku: product.sku || ''
+      stock: product.stock || ''
     });
     setOpenDialog(true);
-  };
-
-  const handleStockDialog = (product) => {
-    setStockProduct(product);
-    setOpenStockDialog(true);
   };
 
   const handleDelete = async (id) => {
@@ -180,15 +139,15 @@ const Products = () => {
     }
   };
 
-  const getStockColor = (stock, minStock) => {
+  const getStockColor = (stock) => {
     if (stock === 0) return 'error';
-    if (stock <= minStock) return 'warning';
+    if (stock <= 10) return 'warning';
     return 'success';
   };
 
-  const getStockLabel = (stock, minStock) => {
+  const getStockLabel = (stock) => {
     if (stock === 0) return 'Sin Stock';
-    if (stock <= minStock) return 'Stock Bajo';
+    if (stock <= 10) return 'Stock Bajo';
     return 'En Stock';
   };
 
@@ -250,21 +209,15 @@ const Products = () => {
                       variant="outlined" 
                     />
                     <Chip 
-                      label={getStockLabel(product.stock, product.minStock)}
+                      label={getStockLabel(product.stock)}
                       size="small" 
-                      color={getStockColor(product.stock, product.minStock)}
+                      color={getStockColor(product.stock)}
                     />
                   </Box>
                   
                   <Typography variant="body2" color="textSecondary">
                     Stock: {product.stock} unidades
                   </Typography>
-                  
-                  {product.sku && (
-                    <Typography variant="body2" color="textSecondary">
-                      SKU: {product.sku}
-                    </Typography>
-                  )}
                 </CardContent>
                 
                 <CardActions>
@@ -275,14 +228,6 @@ const Products = () => {
                     title="Editar"
                   >
                     <EditIcon />
-                  </IconButton>
-                  <IconButton 
-                    size="small" 
-                    color="info"
-                    onClick={() => handleStockDialog(product)}
-                    title="Gestionar Stock"
-                  >
-                    <InventoryIcon />
                   </IconButton>
                   <IconButton 
                     size="small" 
@@ -318,21 +263,13 @@ const Products = () => {
         </DialogTitle>
         <DialogContent>
           <Grid container spacing={2} sx={{ mt: 1 }}>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
               <TextField
                 fullWidth
                 label="Nombre del producto"
                 value={formData.name}
                 onChange={(e) => setFormData({...formData, name: e.target.value})}
                 required
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="SKU"
-                value={formData.sku}
-                onChange={(e) => setFormData({...formData, sku: e.target.value})}
               />
             </Grid>
             <Grid item xs={12}>
@@ -343,6 +280,7 @@ const Products = () => {
                 onChange={(e) => setFormData({...formData, description: e.target.value})}
                 multiline
                 rows={3}
+                required
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -359,22 +297,6 @@ const Products = () => {
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <FormControl fullWidth>
-                <InputLabel>Categoría</InputLabel>
-                <Select
-                  value={formData.category}
-                  label="Categoría"
-                  onChange={(e) => setFormData({...formData, category: e.target.value})}
-                >
-                  {categories.map((category) => (
-                    <MenuItem key={category} value={category}>
-                      {category}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
                 label="Stock inicial"
@@ -384,23 +306,22 @@ const Products = () => {
                 required
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="Stock mínimo"
-                type="number"
-                value={formData.minStock}
-                onChange={(e) => setFormData({...formData, minStock: e.target.value})}
-                required
-              />
-            </Grid>
             <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Proveedor"
-                value={formData.supplier}
-                onChange={(e) => setFormData({...formData, supplier: e.target.value})}
-              />
+              <FormControl fullWidth>
+                <InputLabel>Categoría</InputLabel>
+                <Select
+                  value={formData.category}
+                  label="Categoría"
+                  onChange={(e) => setFormData({...formData, category: e.target.value})}
+                  required
+                >
+                  {categories.map((category) => (
+                    <MenuItem key={category} value={category}>
+                      {category}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </Grid>
           </Grid>
         </DialogContent>
@@ -408,62 +329,6 @@ const Products = () => {
           <Button onClick={() => setOpenDialog(false)}>Cancelar</Button>
           <Button onClick={handleSubmit} variant="contained">
             {editingProduct ? 'Actualizar' : 'Crear'}
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Dialog para gestionar stock */}
-      <Dialog open={openStockDialog} onClose={() => setOpenStockDialog(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>
-          Gestionar Stock - {stockProduct?.name}
-        </DialogTitle>
-        <DialogContent>
-          <Box sx={{ mt: 2 }}>
-            <Typography variant="body1" gutterBottom>
-              Stock actual: <strong>{stockProduct?.stock} unidades</strong>
-            </Typography>
-            
-            <Grid container spacing={2} sx={{ mt: 1 }}>
-              <Grid item xs={12}>
-                <FormControl fullWidth>
-                  <InputLabel>Operación</InputLabel>
-                  <Select
-                    value={stockData.operation}
-                    label="Operación"
-                    onChange={(e) => setStockData({...stockData, operation: e.target.value})}
-                  >
-                    <MenuItem value="add">
-                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <AddStockIcon sx={{ mr: 1, color: 'success.main' }} />
-                        Aumentar Stock
-                      </Box>
-                    </MenuItem>
-                    <MenuItem value="subtract">
-                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <RemoveStockIcon sx={{ mr: 1, color: 'error.main' }} />
-                        Reducir Stock
-                      </Box>
-                    </MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Cantidad"
-                  type="number"
-                  value={stockData.quantity}
-                  onChange={(e) => setStockData({...stockData, quantity: e.target.value})}
-                  required
-                />
-              </Grid>
-            </Grid>
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenStockDialog(false)}>Cancelar</Button>
-          <Button onClick={handleStockUpdate} variant="contained">
-            Actualizar Stock
           </Button>
         </DialogActions>
       </Dialog>

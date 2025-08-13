@@ -40,9 +40,7 @@ const Suppliers = () => {
     email: '',
     phone: '',
     address: '',
-    city: '',
-    country: '',
-    contactPerson: ''
+    country: ''
   });
 
   const loadSuppliers = async () => {
@@ -77,9 +75,7 @@ const Suppliers = () => {
         email: supplier.email || '',
         phone: supplier.phone || '',
         address: supplier.address || '',
-        city: supplier.city || '',
-        country: supplier.country || '',
-        contactPerson: supplier.contactPerson || ''
+        country: supplier.country || ''
       });
     } else {
       setEditingSupplier(null);
@@ -88,9 +84,7 @@ const Suppliers = () => {
         email: '',
         phone: '',
         address: '',
-        city: '',
-        country: '',
-        contactPerson: ''
+        country: ''
       });
     }
     setOpenDialog(true);
@@ -188,18 +182,16 @@ const Suppliers = () => {
                   </Typography>
                   
                   <Typography variant="body2" color="textSecondary">
-                    📍 {supplier.city}, {supplier.country}
+                    📍 {supplier.address}
                   </Typography>
                   
-                  {supplier.contactPerson && (
-                    <Box sx={{ mt: 1 }}>
-                      <Chip 
-                        label={`Contacto: ${supplier.contactPerson}`} 
-                        size="small" 
-                        variant="outlined" 
-                      />
-                    </Box>
-                  )}
+                  <Box sx={{ mt: 1 }}>
+                    <Chip 
+                      label={`País: ${supplier.country}`} 
+                      size="small" 
+                      variant="outlined" 
+                    />
+                  </Box>
                 </CardContent>
                 
                 <CardActions>
@@ -283,33 +275,17 @@ const Suppliers = () => {
                 onChange={handleInputChange}
                 multiline
                 rows={2}
+                required
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="Ciudad"
-                name="city"
-                value={formData.city}
-                onChange={handleInputChange}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
               <TextField
                 fullWidth
                 label="País"
                 name="country"
                 value={formData.country}
                 onChange={handleInputChange}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Persona de contacto"
-                name="contactPerson"
-                value={formData.contactPerson}
-                onChange={handleInputChange}
+                required
               />
             </Grid>
           </Grid>
