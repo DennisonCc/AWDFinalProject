@@ -9,6 +9,8 @@ import Login from './pages/Auth/Login';
 import Dashboard from './pages/Dashboard/Dashboard';
 import Suppliers from './pages/Suppliers/SuppliersSimple';
 import Clients from './pages/Clients/Clients';
+import Products from './pages/Products/Products';
+import Invoices from './pages/Invoices/Invoices';
 
 const theme = createTheme({
   palette: {
@@ -64,7 +66,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Layout>
-                    <div>Módulo de Productos (Próximamente)</div>
+                    <Products />
                   </Layout>
                 </ProtectedRoute>
               }
@@ -74,7 +76,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Layout>
-                    <div>Módulo de Facturas (Próximamente)</div>
+                    <Invoices />
                   </Layout>
                 </ProtectedRoute>
               }
