@@ -1,0 +1,228 @@
+# REQUISITOS DEL SISTEMA - PROYECTO BAZAR (SISTEMA DE GESTIÓN COMERCIAL)
+
+## INFORMACIÓN DEL DOCUMENTO:
+- Documento: Bazar_format_IEEE830 V2.pdf
+- Formato: IEEE 830 (Especificación de Requisitos de Software)
+- Proyecto: Sistema de Gestión Comercial (Inventario, Ventas, Facturación)
+
+## REQUISITOS FUNCIONALES (FR)
+
+### FR-01 Gestión de Proveedores
+- **FR-01.1** El sistema debe permitir crear, modificar, consultar y eliminar proveedores
+- **FR-01.2** Debe almacenar para cada proveedor: número de identificación, empresa, nombre de contacto, teléfono, cuenta bancaria, nombre del banco y catálogo
+- **FR-01.3** El sistema debe validar que los campos numéricos solo acepten números
+
+### FR-02 Gestión de Clientes  
+- **FR-02.1** El sistema debe permitir consultar datos de clientes por número de identificación fiscal
+- **FR-02.2** Debe permitir actualizar y limpiar datos basado en el tipo de factura (consumidor final o cliente registrado)
+- **FR-02.3** Los formularios deben validar datos de entrada (ej: taxid acepta solo números)
+
+### FR-03 Generación de Documentos PDF
+- **FR-03.1** El sistema debe permitir crear documentos PDF incluyendo texto, imágenes (JPEG, PNG, GIF), enlaces y formas
+- **FR-03.2** Debe permitir agregar, rotar y remover páginas en el documento
+- **FR-03.3** El sistema debe permitir establecer propiedades del documento: autor, título, palabras clave, creador y asunto
+- **FR-03.4** Debe soportar fuentes personalizadas y subconjunto de fuentes para reducir el tamaño del archivo
+- **FR-03.5** El sistema debe permitir definir colores y estilos (relleno, borde, subrayado)
+- **FR-03.6** Debe permitir insertar imágenes con resolución y tamaño definidos
+- **FR-03.7** El PDF debe ser descargable a través del navegador
+
+### FR-04 Interfaz de Usuario y Experiencia
+- **FR-04.1** La interfaz debe permitir buscar y filtrar proveedores
+- **FR-04.2** Los formularios deben ser responsivos y adaptarse a dispositivos modernos
+- **FR-04.3** El sistema debe permitir alternar entre temas claro y oscuro, guardando la preferencia del usuario
+- **FR-04.4** Los mensajes de éxito y error deben mostrarse claramente para todas las operaciones
+
+### FR-05 Integridad y Validación de Datos
+- **FR-05.1** El sistema debe validar y normalizar espacios y caracteres en campos de entrada
+- **FR-05.2** Debe restringir el pegado e ingreso de caracteres inválidos en formularios
+- **FR-05.3** El sistema debe mostrar mensajes de error claros para entradas inválidas
+
+### FR-06 Seguridad
+- **FR-06.1** El sistema debe prevenir acciones sin datos requeridos
+- **FR-06.2** Debe prevenir inyección de código en entradas de usuario del backend
+- **FR-06.3** El sistema debe registrar errores críticos del backend para auditoría
+
+### FR-07 API y Backend
+- **FR-07.1** El backend debe proporcionar endpoints seguros para operaciones de proveedores
+- **FR-07.2** Las respuestas de la API deben estar en formato JSON e incluir información de éxito/fallo y mensajes descriptivos
+
+### FR-08 Compatibilidad e Internacionalización
+- **FR-08.1** El sistema debe soportar diferentes codificaciones y fuentes para internacionalización de PDF
+- **FR-08.2** Los PDFs generados deben ser visualizables en los principales lectores de PDF
+
+## REQUISITOS NO FUNCIONALES (NFR)
+
+### NFR-01 Rendimiento
+- **NFR-01.1** El sistema debe generar documentos PDF en menos de 3 segundos para hasta 10 páginas sin imágenes grandes
+- **NFR-01.2** Las operaciones CRUD para proveedores/clientes deben responder en menos de 1 segundo bajo condiciones normales
+
+### NFR-02 Usabilidad
+- **NFR-02.1** La interfaz debe ser intuitiva y fácil de usar sin entrenamiento técnico
+- **NFR-02.2** Los formularios deben ser accesibles y cumplir con estándares de accesibilidad web
+
+### NFR-03 Compatibilidad
+- **NFR-03.1** El sistema debe funcionar en los principales navegadores modernos (Chrome, Firefox, Edge, Safari)
+- **NFR-03.2** El backend debe ser compatible con versiones recientes y seguras
+
+### NFR-04 Mantenibilidad
+- **NFR-04.1** El código debe ser modular y documentado para fácil mantenimiento y extensión
+- **NFR-04.2** Las dependencias deben ser actualizables sin dificultad
+
+### NFR-05 Seguridad
+- **NFR-05.1** Todos los datos sensibles deben transmitirse vía HTTPS en producción
+- **NFR-05.2** Los errores deben manejarse sin exponer detalles internos a usuarios finales
+
+### NFR-06 Portabilidad
+- **NFR-06.1** El sistema debe desplegarse en cualquier servidor compatible con tecnologías web modernas
+- **NFR-06.2** El sistema debe usar una base de datos relacional para almacenamiento persistente
+
+### NFR-07 Licenciamiento
+- **NFR-07.1** El sistema debe mantener y respetar la licencia de uso libre, distribución y modificación
+
+### NFR-08 Escalabilidad
+- **NFR-08.1** El sistema debe escalar para manejar incrementos en números de proveedores, clientes y documentos sin rediseño arquitectónico
+
+### NFR-09 Logging y Auditoría
+- **NFR-09.1** El backend debe registrar acciones críticas y errores para auditoría
+
+## REQUISITOS DE INTERFAZ
+
+### 3.2.1 Interfaces de Usuario
+- Diseño centrado en el usuario, asegurando facilidad de uso y accesibilidad
+- Interfaz intuitiva sin necesidad de entrenamiento técnico
+
+### 3.2.2 Interfaces de Hardware
+- Compatible con dispositivos estándar como impresoras para generar facturas físicas
+- Soporte para escáneres de código de barras para procesos de inventario
+- Soporte para dispositivos móviles Android 8+ e iOS 13+
+
+### 3.2.3 Interfaces de Software
+- API RESTful para comunicación cliente-servidor
+- Compatible con bases de datos relacionales (PostgreSQL)
+- Sistemas de almacenamiento en la nube (AWS S3 para archivos, logs y respaldos)
+- Integración futura con sistemas de pago en línea
+
+### 3.2.4 Interfaz Web
+- Aplicación web con diseño responsivo, optimizada para móvil y escritorio
+- Incluye menús desplegables, formularios intuitivos y botones de acción claramente definidos
+
+**Secciones principales:**
+1. **Dashboard:** Resumen visual de operaciones comerciales
+2. **Inventario:** Lista completa de productos y herramientas de gestión
+3. **Ventas:** Generación de facturas y registro de transacciones
+4. **Flujo de Caja:** Seguimiento y análisis de ingresos y gastos
+5. **Clientes y Proveedores:** Gestión de contactos y transacciones
+
+## STACK TECNOLÓGICO PROPUESTO
+
+**Frontend (React):**
+- React.js 18+
+- React Router para navegación
+- Context API o Redux para estado global
+- Material-UI o Styled Components para UI
+- Axios para peticiones HTTP
+- React Hook Form para formularios
+- jsPDF para generación de PDFs
+
+**Backend (Node.js):**
+- Node.js + Express.js
+- MongoDB Atlas como base de datos principal
+- Mongoose ODM
+- JWT para autenticación
+- Multer para manejo de archivos
+- Winston para logging
+- Joi para validación de datos
+- Bcrypt para hash de contraseñas
+
+## ARQUITECTURA DEL PROYECTO
+```
+proyecto-bazar/
+├── frontend/
+│   ├── public/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── common/
+│   │   │   ├── forms/
+│   │   │   └── ui/
+│   │   ├── pages/
+│   │   │   ├── Dashboard/
+│   │   │   ├── Suppliers/
+│   │   │   ├── Clients/
+│   │   │   ├── Inventory/
+│   │   │   ├── Sales/
+│   │   │   └── Reports/
+│   │   ├── services/
+│   │   ├── context/
+│   │   ├── hooks/
+│   │   ├── utils/
+│   │   └── styles/
+│   └── package.json
+├── backend/
+│   ├── controllers/
+│   │   ├── supplierController.js
+│   │   ├── clientController.js
+│   │   ├── pdfController.js
+│   │   └── authController.js
+│   ├── models/
+│   │   ├── Supplier.js
+│   │   ├── Client.js
+│   │   └── User.js
+│   ├── routes/
+│   │   ├── suppliers.js
+│   │   ├── clients.js
+│   │   ├── pdf.js
+│   │   └── auth.js
+│   ├── middleware/
+│   │   ├── auth.js
+│   │   ├── validation.js
+│   │   └── logging.js
+│   ├── config/
+│   │   ├── database.js
+│   │   └── config.js
+│   ├── utils/
+│   └── package.json
+├── docs/
+├── .env.example
+└── README.md
+```
+
+## PLAN DE DESARROLLO
+
+### Fase 1: Configuración del Proyecto
+- [ ] Configurar estructura de carpetas
+- [ ] Configurar base de datos PostgreSQL
+- [ ] Configurar backend con Express.js
+- [ ] Configurar frontend con React
+
+### Fase 2: Backend - API Core
+- [ ] Implementar modelos de datos (Supplier, Client)
+- [ ] Crear controladores CRUD
+- [ ] Implementar rutas de API
+- [ ] Configurar middleware de validación y logging
+
+### Fase 3: Frontend - Interfaz Base
+- [ ] Crear componentes base y layout
+- [ ] Implementar sistema de routing
+- [ ] Crear formularios con validación
+- [ ] Implementar sistema de temas (claro/oscuro)
+
+### Fase 4: Funcionalidades Principales
+- [ ] Gestión de proveedores (CRUD completo)
+- [ ] Gestión de clientes
+- [ ] Generación de PDFs
+- [ ] Dashboard con métricas
+
+### Fase 5: Características Avanzadas
+- [ ] Sistema de búsqueda y filtros
+- [ ] Logging y auditoría
+- [ ] Optimización de rendimiento
+- [ ] Testing y documentación
+
+## PRÓXIMOS PASOS INMEDIATOS:
+1. **Configurar el workspace del proyecto**
+2. **Inicializar estructura de carpetas**
+3. **Configurar base de datos**
+4. **Crear API básica para proveedores**
+5. **Implementar interfaz de gestión de proveedores**
+
+¿Deseas que procedamos con la **Fase 1: Configuración del Proyecto**?
