@@ -29,18 +29,18 @@ router.get('/:id', protect, getClientById);
 
 // @route   POST /api/clients
 // @desc    Crear nuevo cliente
-// @access  Private (requiere permisos de client_create)
-router.post('/', protect, authorize(['admin', 'manager', 'employee'], ['client_create']), createClient);
+// @access  Private (requiere permisos de clients:write)
+router.post('/', protect, authorize('clients:write'), createClient);
 
 // @route   PUT /api/clients/:id
 // @desc    Actualizar cliente
-// @access  Private (requiere permisos de client_update)
-router.put('/:id', protect, authorize(['admin', 'manager', 'employee'], ['client_update']), updateClient);
+// @access  Private (requiere permisos de clients:write)
+router.put('/:id', protect, authorize('clients:write'), updateClient);
 
 // @route   DELETE /api/clients/:id
 // @desc    Eliminar cliente (soft delete)
-// @access  Private (requiere permisos de client_delete)
-router.delete('/:id', protect, authorize(['admin', 'manager'], ['client_delete']), deleteClient);
+// @access  Private (requiere permisos de clients:delete)
+router.delete('/:id', protect, authorize('clients:delete'), deleteClient);
 
 // @route   GET /api/clients/:id/invoices
 // @desc    Obtener historial de facturas del cliente

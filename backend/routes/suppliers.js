@@ -15,12 +15,12 @@ const { protect, authorize } = require('../middleware/auth');
 // @route   GET /api/suppliers
 // @desc    Obtener todos los proveedores
 // @access  Private
-router.get('/', protect, authorize('suppliers:read'), getSuppliers);
+router.get('/', protect, getSuppliers);
 
 // @route   GET /api/suppliers/:id
 // @desc    Obtener un proveedor por ID
 // @access  Private
-router.get('/:id', protect, authorize('suppliers:read'), getSupplierById);
+router.get('/:id', protect, getSupplierById);
 
 // @route   POST /api/suppliers
 // @desc    Crear nuevo proveedor
@@ -40,7 +40,7 @@ router.delete('/:id', protect, authorize('suppliers:delete'), deleteSupplier);
 // @route   GET /api/suppliers/:id/catalog
 // @desc    Obtener catálogo de un proveedor
 // @access  Private
-router.get('/:id/catalog', protect, authorize('suppliers:read'), getSupplierCatalog);
+router.get('/:id/catalog', protect, getSupplierCatalog);
 
 // @route   POST /api/suppliers/:id/catalog
 // @desc    Agregar producto al catálogo del proveedor

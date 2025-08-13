@@ -40,22 +40,22 @@ router.get('/:id', protect, getProductById);
 
 // @route   POST /api/products
 // @desc    Crear nuevo producto
-// @access  Private (requiere permisos de product_create)
-router.post('/', protect, authorize(['admin', 'manager'], ['product_create']), createProduct);
+// @access  Private (requiere permisos de products:write)
+router.post('/', protect, authorize('products:write'), createProduct);
 
 // @route   PUT /api/products/:id
 // @desc    Actualizar producto
-// @access  Private (requiere permisos de product_update)
-router.put('/:id', protect, authorize(['admin', 'manager'], ['product_update']), updateProduct);
+// @access  Private (requiere permisos de products:write)
+router.put('/:id', protect, authorize('products:write'), updateProduct);
 
 // @route   DELETE /api/products/:id
 // @desc    Eliminar producto (soft delete)
-// @access  Private (requiere permisos de product_delete)
-router.delete('/:id', protect, authorize(['admin', 'manager'], ['product_delete']), deleteProduct);
+// @access  Private (requiere permisos de products:delete)
+router.delete('/:id', protect, authorize('products:delete'), deleteProduct);
 
 // @route   PUT /api/products/:id/inventory
 // @desc    Actualizar inventario de producto
-// @access  Private (requiere permisos de inventory_update)
-router.put('/:id/inventory', protect, authorize(['admin', 'manager', 'employee'], ['inventory_update']), updateInventory);
+// @access  Private (requiere permisos de products:write)
+router.put('/:id/inventory', protect, authorize('products:write'), updateInventory);
 
 module.exports = router;

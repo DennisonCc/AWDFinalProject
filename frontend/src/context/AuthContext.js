@@ -34,18 +34,12 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (credentials) => {
     try {
-      console.log('🔐 AuthContext: Iniciando login...');
       const { user, token } = await authService.login(credentials);
-      
-      console.log('✅ AuthContext: Login exitoso');
-      console.log('👤 Usuario recibido:', user);
-      console.log('🔑 Token recibido:', token ? 'SÍ' : 'NO');
-      
       setUser(user);
       setIsAuthenticated(true);
       return { success: true, user, token };
     } catch (error) {
-      console.error('❌ AuthContext: Error en login:', error);
+      console.error('Error en login:', error);
       return { 
         success: false, 
         message: error.message || 'Error en el login' 

@@ -28,22 +28,22 @@ router.get('/:id', protect, getInvoiceById);
 
 // @route   POST /api/invoices
 // @desc    Crear nueva factura
-// @access  Private (requiere permisos de invoice_create)
-router.post('/', protect, authorize(['admin', 'manager', 'employee'], ['invoice_create']), createInvoice);
+// @access  Private (requiere permisos de invoices:write)
+router.post('/', protect, authorize('invoices:write'), createInvoice);
 
 // @route   PUT /api/invoices/:id/status
 // @desc    Actualizar estado de factura
-// @access  Private (requiere permisos de invoice_update)
-router.put('/:id/status', protect, authorize(['admin', 'manager'], ['invoice_update']), updateInvoiceStatus);
+// @access  Private (requiere permisos de invoices:write)
+router.put('/:id/status', protect, authorize('invoices:write'), updateInvoiceStatus);
 
 // @route   PUT /api/invoices/:id/payment
 // @desc    Actualizar estado de pago
-// @access  Private (requiere permisos de payment_update)
-router.put('/:id/payment', protect, authorize(['admin', 'manager', 'employee'], ['payment_update']), updatePaymentStatus);
+// @access  Private (requiere permisos de invoices:write)
+router.put('/:id/payment', protect, authorize('invoices:write'), updatePaymentStatus);
 
 // @route   DELETE /api/invoices/:id
 // @desc    Eliminar factura (solo en estado draft)
-// @access  Private (requiere permisos de invoice_delete)
-router.delete('/:id', protect, authorize(['admin', 'manager'], ['invoice_delete']), deleteInvoice);
+// @access  Private (requiere permisos de invoices:delete)
+router.delete('/:id', protect, authorize('invoices:delete'), deleteInvoice);
 
 module.exports = router;
